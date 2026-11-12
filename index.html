@@ -402,7 +402,7 @@
     <div class="main-card">
       <form id="formCita">
 
-        <!-- Sección 1: Bultos y Clasificación (Define la duración requerida) -->
+        <!-- Sección 1: Bultos y Clasificación con 0 fantasma (placeholder) -->
         <div class="section-title">
           📦 1. Detalle de Carga y Ocupación
         </div>
@@ -410,13 +410,13 @@
         <div class="form-grid">
           <div class="form-group">
             <label for="cajasSeca">Cajas de Carga Seca</label>
-            <input type="number" id="cajasSeca" min="0" value="0" placeholder="0">
+            <input type="number" id="cajasSeca" min="0" placeholder="0">
             <span class="helper-text">Agroquímicos, fertilizantes y medicamentos generales.</span>
           </div>
 
           <div class="form-group">
             <label for="cavasFrio">Cavas Carga Refrigerada</label>
-            <input type="number" id="cavasFrio" min="0" value="0" placeholder="0">
+            <input type="number" id="cavasFrio" min="0" placeholder="0">
             <span class="helper-text">Biológicos y vacunas (requieren cadena de frío).</span>
           </div>
         </div>
@@ -443,7 +443,7 @@
           </div>
         </div>
 
-        <!-- Sección 2: Agenda de Horario Dinámico -->
+        <!-- Sección 2: Agenda de Horario Dinámico en Hora Colombia (GMT-5) -->
         <div class="section-title">
           📅 2. Fecha y Horarios Disponibles
         </div>
@@ -471,12 +471,12 @@
         <div class="form-grid">
           <div class="form-group">
             <label for="transportadora">Transportadora o Aliado <span class="req">*</span></label>
-            <input type="text" id="transportadora" placeholder="Ej. TCC, Coordinadora, Propio..." required>
+            <input type="text" id="transportadora" placeholder="Ej. TCC, Coordinadora, Solistica..." required>
           </div>
 
           <div class="form-group">
             <label for="proveedor">Proveedor que envía <span class="req">*</span></label>
-            <input type="text" id="proveedor" placeholder="Ej. Syngenta, Bayer, Agripac..." required>
+            <input type="text" id="proveedor" placeholder="Ej. Syngenta, Bayer, Virbac..." required>
           </div>
 
           <div class="form-group">
@@ -502,8 +502,9 @@
 
         <div class="spinner" id="loadingSpinner"></div>
 
+        <!-- Botón Principal con nuevo nombre -->
         <button type="submit" class="btn-submit" id="btnEnviar">
-          Confirmar y Reservar Cita de Muelle
+          Confirmar y Reservar Cita
         </button>
 
       </form>
@@ -550,7 +551,7 @@
       <p style="font-size: 0.85rem; color: #555; margin-bottom: 15px;">Ingresa el código de tu cita para notificar a la bodega y evitar la cancelación:</p>
 
       <div class="form-group" style="text-align: left; margin-bottom: 12px;">
-        <label for="txtCitaRetraso">Código de Cita (Ej. AGR-ITA-20260331-001)</label>
+        <label for="txtCitaRetraso">Código de Cita (Ej. AGR-ITA-20261113-001)</label>
         <input type="text" id="txtCitaRetraso" placeholder="AGR-ITA-..." style="text-transform: uppercase;">
       </div>
 
@@ -591,24 +592,44 @@
     const btnEnviar = document.getElementById("btnEnviar");
     const spinner = document.getElementById("loadingSpinner");
 
-    // Franjas teóricas de inicio (7:00 AM a 4:00 PM cada 30 min)
+    // Franjas de inicio teóricas (7:00 AM a 4:00 PM cada 30 min)
     const FRANJAS_BASE = [
       "07:00", "07:30", "08:00", "08:30", "09:00", "09:30",
       "10:00", "10:30", "11:00", "11:30",
       "13:00", "13:30", "14:00", "14:30", "15:00", "15:30", "16:00"
     ];
 
-    // Horario de Almuerzo y Cierre (en minutos del día)
+    // Horarios de Almuerzo y Cierre (minutos desde medianoche)
     const INICIO_ALMUERZO = 12 * 60; // 12:00 PM
     const FIN_ALMUERZO = 13 * 60;    // 01:00 PM
     const HORA_CIERRE = 16 * 60 + 30; // 04:30 PM
 
-    // Fecha mínima = Hoy
-    const hoy = new Date().toISOString().split("T")[0];
-    inpFecha.min = hoy;
-    inpFecha.value = hoy;
+    // Función auxiliar para obtener la fecha de Colombia en formato YYYY-MM-DD
+    function obtenerFechaColombia() {
+      const opciones = { timeZone: "America/Bogota", year: "numeric", month: "2-digit", day: "2-digit" };
+      const partes = new Intl.DateTimeFormat("en-CA", opciones).formatToParts(new Date());
+      const y = partes.find(p => p.type === "year").value;
+      const m = partes.find(p => p.type === "month").value;
+      const d = partes.find(p => p.type === "day").value;
+      return `${y}-${m}-${d}`;
+    }
 
-    // Cálculo dinámico de ocupación
+    // Inicializar fecha mínima en hora colombiana
+    const fechaHoyCol = obtenerFechaColombia();
+    inpFecha.min = fechaHoyCol;
+    inpFecha.value = fechaHoyCol;
+
+    // Conversión de hora texto a minutos enteros
+    function parseHoraAMinutos(texto) {
+      if (!texto) return null;
+      const partes = String(texto).trim().split(":");
+      if (partes.length < 2) return null;
+      const h = parseInt(partes[0], 10);
+      const m = parseInt(partes[1], 10);
+      return (isNaN(h) || isNaN(m)) ? null : (h * 60) + m;
+    }
+
+    // Cálculo dinámico de ocupación (acepta campos vacíos con valor 0 por defecto)
     function calcularOcupacion() {
       const seca = parseInt(inpCajasSeca.value || 0, 10);
       const frio = parseInt(inpCavasFrio.value || 0, 10);
@@ -663,19 +684,18 @@
       try {
         const resp = await fetch(`${URL_APPS_SCRIPT}?fecha=${fecha}`);
         const data = await resp.json();
-        if (data.status === "success" && data.ocupadas) {
+        if (data.status === "success" && Array.isArray(data.ocupadas)) {
           citasOcupadas = data.ocupadas;
         }
       } catch (e) {
-        console.warn("Consulta sin conexión previa, aplicando filtros locales:", e);
+        console.warn("Consulta sin conexión previa:", e);
       }
 
       selHoraInicio.innerHTML = '<option value="">Seleccione hora disponible...</option>';
       let slotsValidos = 0;
 
       FRANJAS_BASE.forEach(horaStr => {
-        const [h, m] = horaStr.split(":").map(Number);
-        const slotInicioMin = h * 60 + m;
+        const slotInicioMin = parseHoraAMinutos(horaStr);
         const slotFinMin = slotInicioMin + duracionMin;
 
         // 1. Validar que no sobrepase el cierre de las 16:30
@@ -684,28 +704,29 @@
         // 2. Validar que no se cruce con el almuerzo (12:00 a 13:00)
         if (Math.max(slotInicioMin, INICIO_ALMUERZO) < Math.min(slotFinMin, FIN_ALMUERZO)) return;
 
-        // 3. Validar solape con citas existentes ya agendadas
+        // 3. Validar colisión estricta con citas existentes
         const haySolape = citasOcupadas.some(cita => {
-          const [cIniH, cIniM] = String(cita.inicio).split(":").map(Number);
-          const [cFinH, cFinM] = String(cita.fin).split(":").map(Number);
-          const cIni = cIniH * 60 + cIniM;
-          const cFin = cFinH * 60 + cFinM;
+          const cIni = parseHoraAMinutos(cita.inicio);
+          const cFin = parseHoraAMinutos(cita.fin);
+          if (cIni === null || cFin === null) return false;
           return Math.max(slotInicioMin, cIni) < Math.min(slotFinMin, cFin);
         });
 
         if (!haySolape) {
           const opt = document.createElement("option");
           opt.value = horaStr;
+          const [hStr, mStr] = horaStr.split(":");
+          const h = parseInt(hStr, 10);
           const periodo = h >= 12 ? "PM" : "AM";
           const h12 = h > 12 ? h - 12 : (h === 0 ? 12 : h);
-          opt.innerText = `${String(h12).padStart(2, '0')}:${String(m).padStart(2, '0')} ${periodo}`;
+          opt.innerText = `${String(h12).padStart(2, '0')}:${mStr} ${periodo}`;
           selHoraInicio.appendChild(opt);
           slotsValidos++;
         }
       });
 
       if (slotsValidos === 0) {
-        selHoraInicio.innerHTML = '<option value="">⚠️ Sin franjas continuas de ' + duracionMin + 'm para esta fecha</option>';
+        selHoraInicio.innerHTML = `<option value="">⚠️ Sin franjas continuas de ${duracionMin}m para esta fecha</option>`;
       }
     }
 
@@ -716,8 +737,8 @@
         txtHoraFin.innerText = "";
         return;
       }
-      const [h, m] = hora.split(":").map(Number);
-      const finTotal = (h * 60 + m) + duracionMin;
+      const slotInicioMin = parseHoraAMinutos(hora);
+      const finTotal = slotInicioMin + duracionMin;
       const finH = String(Math.floor(finTotal / 60)).padStart(2, '0');
       const finM = String(finTotal % 60).padStart(2, '0');
       txtHoraFin.innerText = `Finalización estimada de descarga: ${finH}:${finM}`;
