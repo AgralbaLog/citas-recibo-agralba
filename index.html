@@ -10,18 +10,18 @@
 
   <style>
     :root {
-      --primary-color: #1b5e20;        /* Verde institucional oscuro Agralba */
-      --primary-light: #2e7d32;        /* Verde medio */
-      --accent-color: #8bc34a;         /* Verde brote / agricultura */
+      --primary-color: #0e5835;        /* Verde corporativo oscuro Agralba */
+      --primary-light: #1b7a48;        /* Verde medio Agralba */
+      --accent-color: #f7a600;         /* Tono naranja/dorado hoja Agralba */
       --accent-cold: #0288d1;          /* Azul cadena de frío */
       --accent-warning: #e65100;       /* Naranja para retrasos */
       --bg-light: #f4f6f8;             /* Fondo gris neutro suave */
       --card-bg: #ffffff;
       --text-main: #212529;
       --text-muted: #666666;
-      --border-color: #e0e0e0;
-      --radius: 12px;
-      --shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+      --border-color: #d1d5db;
+      --radius: 14px;
+      --shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
     }
 
     * {
@@ -45,36 +45,54 @@
 
     /* Encabezado Corporativo */
     .header-card {
-      background: linear-gradient(135deg, var(--primary-color), var(--primary-light));
+      background: linear-gradient(145deg, var(--primary-color), var(--primary-light));
       color: #ffffff;
-      padding: 28px 24px;
+      padding: 24px 20px;
       border-radius: var(--radius);
       box-shadow: var(--shadow);
       text-align: center;
-      margin-bottom: 24px;
+      margin-bottom: 22px;
       position: relative;
+    }
+
+    /* Contenedor del Logo */
+    .logo-wrapper {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+
+    .brand-logo {
+      max-height: 62px;
+      width: auto;
+      border-radius: 10px;
+      background: #ffffff;
+      padding: 6px 16px;
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.15);
+      object-fit: contain;
     }
 
     .header-card h1 {
       font-family: 'Montserrat', sans-serif;
       font-weight: 800;
-      font-size: 1.6rem;
+      font-size: 1.5rem;
       letter-spacing: 0.5px;
-      margin-bottom: 6px;
+      margin-bottom: 4px;
       text-transform: uppercase;
     }
 
     .header-card p {
-      font-size: 0.95rem;
-      opacity: 0.9;
+      font-size: 0.92rem;
+      opacity: 0.95;
     }
 
     .badge-sede {
       display: inline-block;
-      background: rgba(255, 255, 255, 0.2);
+      background: rgba(255, 255, 255, 0.22);
       padding: 4px 14px;
       border-radius: 20px;
-      font-size: 0.85rem;
+      font-size: 0.82rem;
       font-weight: 600;
       margin-top: 10px;
       border: 1px solid rgba(255, 255, 255, 0.4);
@@ -84,14 +102,14 @@
     .main-card {
       background: var(--card-bg);
       border-radius: var(--radius);
-      padding: 30px 24px;
+      padding: 28px 22px;
       box-shadow: var(--shadow);
       margin-bottom: 20px;
     }
 
     .section-title {
       font-family: 'Montserrat', sans-serif;
-      font-size: 1.15rem;
+      font-size: 1.1rem;
       font-weight: 700;
       color: var(--primary-color);
       margin-bottom: 16px;
@@ -127,7 +145,7 @@
     }
 
     label {
-      font-size: 0.85rem;
+      font-size: 0.84rem;
       font-weight: 600;
       color: #333;
     }
@@ -145,24 +163,35 @@
       font-size: 0.95rem;
       font-family: inherit;
       transition: border-color 0.2s, box-shadow 0.2s;
+      background: #ffffff;
+    }
+
+    /* Supresión de flechas en inputs numéricos */
+    input[type=number]::-webkit-inner-spin-button, 
+    input[type=number]::-webkit-outer-spin-button { 
+      -webkit-appearance: none; 
+      margin: 0; 
+    }
+    input[type=number] {
+      -moz-appearance: textfield;
     }
 
     input:focus, select:focus {
       outline: none;
       border-color: var(--primary-light);
-      box-shadow: 0 0 0 3px rgba(46, 125, 50, 0.15);
+      box-shadow: 0 0 0 3px rgba(27, 122, 72, 0.18);
     }
 
     .helper-text {
-      font-size: 0.75rem;
+      font-size: 0.74rem;
       color: var(--text-muted);
       margin-top: 2px;
     }
 
     /* Panel de Cálculo de Carga y Tiempos */
     .calc-box {
-      background: #f8faf9;
-      border: 1.5px dashed #c8e6c9;
+      background: #f7faf8;
+      border: 1.5px dashed #b7dfca;
       border-radius: 10px;
       padding: 18px;
       margin-bottom: 22px;
@@ -176,7 +205,7 @@
     }
 
     .calc-title {
-      font-size: 0.9rem;
+      font-size: 0.88rem;
       font-weight: 700;
       color: var(--primary-color);
     }
@@ -228,7 +257,7 @@
     }
 
     .stat-card .lbl {
-      font-size: 0.75rem;
+      font-size: 0.74rem;
       color: var(--text-muted);
     }
 
@@ -245,7 +274,7 @@
       font-family: 'Montserrat', sans-serif;
       cursor: pointer;
       transition: background 0.3s, transform 0.1s;
-      box-shadow: 0 4px 12px rgba(27, 94, 32, 0.25);
+      box-shadow: 0 4px 14px rgba(14, 88, 53, 0.25);
     }
 
     .btn-submit:hover {
@@ -279,14 +308,14 @@
       text-decoration: underline;
     }
 
-    /* Modal / Popups */
+    /* Modales */
     .modal-overlay {
       position: fixed;
       top: 0;
       left: 0;
       width: 100%;
       height: 100%;
-      background: rgba(0, 0, 0, 0.5);
+      background: rgba(0, 0, 0, 0.55);
       display: none;
       justify-content: center;
       align-items: center;
@@ -359,8 +388,11 @@
 <body>
 
   <div class="container">
-    <!-- Encabezado -->
+    <!-- Encabezado con Logo Oficial de Agralba -->
     <div class="header-card">
+      <div class="logo-wrapper">
+        <img src="images.jpeg" alt="Logo Agralba" class="brand-logo" onerror="this.onerror=null; this.src='logo.png';">
+      </div>
       <h1>Portal de Citas de Recibo</h1>
       <p>Distribuciones Agralba S.A. | Operaciones & Logística</p>
       <span class="badge-sede">📍 Sede Activa: CEDI Itagüí</span>
@@ -370,46 +402,9 @@
     <div class="main-card">
       <form id="formCita">
 
-        <!-- Sección 1: Datos de Entrega y Transporte -->
+        <!-- Sección 1: Bultos y Clasificación (Define la duración requerida) -->
         <div class="section-title">
-          🚚 1. Información del Transporte
-        </div>
-
-        <div class="form-grid">
-          <div class="form-group">
-            <label for="transportadora">Transportadora o Aliado <span class="req">*</span></label>
-            <input type="text" id="transportadora" placeholder="Ej. TCC, Coordinadora, Propio..." required>
-          </div>
-
-          <div class="form-group">
-            <label for="proveedor">Proveedor que envía <span class="req">*</span></label>
-            <input type="text" id="proveedor" placeholder="Ej. Syngenta, Bayer, Agripac..." required>
-          </div>
-
-          <div class="form-group">
-            <label for="placa">Placa del Vehículo <span class="req">*</span></label>
-            <input type="text" id="placa" placeholder="Ej. SZM-789" maxlength="7" style="text-transform: uppercase;" required>
-          </div>
-
-          <div class="form-group">
-            <label for="conductor">Nombre Conductor <span class="req">*</span></label>
-            <input type="text" id="conductor" placeholder="Nombre completo" required>
-          </div>
-
-          <div class="form-group">
-            <label for="telefono">Celular / WhatsApp Conductor <span class="req">*</span></label>
-            <input type="tel" id="telefono" placeholder="Ej. 3001234567" required>
-          </div>
-
-          <div class="form-group">
-            <label for="numFacturas">Número de Facturas / Remisiones <span class="req">*</span></label>
-            <input type="number" id="numFacturas" min="1" value="1" required>
-          </div>
-        </div>
-
-        <!-- Sección 2: Bultos y Clasificación -->
-        <div class="section-title">
-          📦 2. Detalle de Carga y Ocupación
+          📦 1. Detalle de Carga y Ocupación
         </div>
 
         <div class="form-grid">
@@ -448,9 +443,9 @@
           </div>
         </div>
 
-        <!-- Sección 3: Agenda de Horario -->
+        <!-- Sección 2: Agenda de Horario Dinámico -->
         <div class="section-title">
-          📅 3. Fecha y Hora de Llegada
+          📅 2. Fecha y Horarios Disponibles
         </div>
 
         <div class="form-grid">
@@ -460,29 +455,48 @@
           </div>
 
           <div class="form-group">
-            <label for="horaInicio">Hora de Llegada <span class="req">*</span></label>
+            <label for="horaInicio">Hora de Llegada (Franjas Libres) <span class="req">*</span></label>
             <select id="horaInicio" required>
-              <option value="">Seleccione hora...</option>
-              <option value="07:00">07:00 AM</option>
-              <option value="07:30">07:30 AM</option>
-              <option value="08:00">08:00 AM</option>
-              <option value="08:30">08:30 AM</option>
-              <option value="09:00">09:00 AM</option>
-              <option value="09:30">09:30 AM</option>
-              <option value="10:00">10:00 AM</option>
-              <option value="10:30">10:30 AM</option>
-              <option value="11:00">11:00 AM</option>
-              <option value="11:30">11:30 AM</option>
-              <!-- 12:00 a 13:00 Bloqueado por Almuerzo de Bodega -->
-              <option value="13:00">01:00 PM</option>
-              <option value="13:30">01:30 PM</option>
-              <option value="14:00">02:00 PM</option>
-              <option value="14:30">02:30 PM</option>
-              <option value="15:00">03:00 PM</option>
-              <option value="15:30">03:30 PM</option>
-              <option value="16:00">04:00 PM</option>
+              <option value="">Seleccione bultos y fecha primero...</option>
             </select>
             <span class="helper-text" id="txtHoraFin"></span>
+          </div>
+        </div>
+
+        <!-- Sección 3: Datos de Entrega y Transporte -->
+        <div class="section-title">
+          🚚 3. Información del Transporte y Proveedor
+        </div>
+
+        <div class="form-grid">
+          <div class="form-group">
+            <label for="transportadora">Transportadora o Aliado <span class="req">*</span></label>
+            <input type="text" id="transportadora" placeholder="Ej. TCC, Coordinadora, Propio..." required>
+          </div>
+
+          <div class="form-group">
+            <label for="proveedor">Proveedor que envía <span class="req">*</span></label>
+            <input type="text" id="proveedor" placeholder="Ej. Syngenta, Bayer, Agripac..." required>
+          </div>
+
+          <div class="form-group">
+            <label for="numFacturas">Números de Facturas / Remisiones <span class="req">*</span></label>
+            <input type="text" id="numFacturas" placeholder="Ej. FE-8452, FE-8453, REM-102" required>
+          </div>
+
+          <div class="form-group">
+            <label for="placa">Placa del Vehículo <span class="req">*</span></label>
+            <input type="text" id="placa" placeholder="Ej. SZM-789" maxlength="7" style="text-transform: uppercase;" required>
+          </div>
+
+          <div class="form-group">
+            <label for="conductor">Nombre Conductor <span class="req">*</span></label>
+            <input type="text" id="conductor" placeholder="Nombre completo" required>
+          </div>
+
+          <div class="form-group">
+            <label for="telefono">Celular / WhatsApp Conductor <span class="req">*</span></label>
+            <input type="tel" id="telefono" placeholder="Ej. 3001234567" required>
           </div>
         </div>
 
@@ -558,11 +572,9 @@
     </div>
   </div>
 
-  <!-- Lógica y Conexión con Google Apps Script -->
+  <!-- Lógica Reactiva y Conexión Backend -->
   <script>
-    // =========================================================================
-    // CONFIGURACIÓN: Reemplaza con tu URL obtenida en el Paso 6 de Apps Script
-    // =========================================================================
+    // URL desplegada del script de Google Drive
     const URL_APPS_SCRIPT = "https://script.google.com/macros/s/AKfycbwUx9ujSubAABIxT1ZQ95bY2M-ylbH7y5nEmpOXrXU_qvFL47xm1DNqsngxS5KcAcqX/exec";
 
     // Elementos del DOM
@@ -572,14 +584,26 @@
     const dispBultos = document.getElementById("dispBultos");
     const dispBloques = document.getElementById("dispBloques");
     const dispDuracion = document.getElementById("dispDuracion");
+    const inpFecha = document.getElementById("fechaCita");
     const selHoraInicio = document.getElementById("horaInicio");
     const txtHoraFin = document.getElementById("txtHoraFin");
     const formCita = document.getElementById("formCita");
     const btnEnviar = document.getElementById("btnEnviar");
     const spinner = document.getElementById("loadingSpinner");
 
-    // Preseleccionar fecha mínima = hoy
-    const inpFecha = document.getElementById("fechaCita");
+    // Franjas teóricas de inicio (7:00 AM a 4:00 PM cada 30 min)
+    const FRANJAS_BASE = [
+      "07:00", "07:30", "08:00", "08:30", "09:00", "09:30",
+      "10:00", "10:30", "11:00", "11:30",
+      "13:00", "13:30", "14:00", "14:30", "15:00", "15:30", "16:00"
+    ];
+
+    // Horario de Almuerzo y Cierre (en minutos del día)
+    const INICIO_ALMUERZO = 12 * 60; // 12:00 PM
+    const FIN_ALMUERZO = 13 * 60;    // 01:00 PM
+    const HORA_CIERRE = 16 * 60 + 30; // 04:30 PM
+
+    // Fecha mínima = Hoy
     const hoy = new Date().toISOString().split("T")[0];
     inpFecha.min = hoy;
     inpFecha.value = hoy;
@@ -592,7 +616,6 @@
 
       dispBultos.innerText = total;
 
-      // Determinar Etiqueta de Carga
       if (seca > 0 && frio > 0) {
         tagCarga.innerText = "Carga Mixta (Prioridad Frío)";
         tagCarga.className = "tag-carga mixta";
@@ -607,19 +630,88 @@
         tagCarga.className = "tag-carga";
       }
 
-      // Cálculo de bloques de 30 min (50 bultos por bloque)
       const bloques = total > 0 ? Math.ceil(total / 50) : 0;
       const duracionMin = bloques * 30;
 
       dispBloques.innerText = bloques;
       dispDuracion.innerText = duracionMin + " min";
 
-      // Actualizar cálculo de hora final si hay hora de inicio seleccionada
-      actualizarHoraFin(duracionMin);
+      // Actualizar opciones de horas válidas según la nueva duración
+      actualizarHorasDisponibles();
     }
 
-    function actualizarHoraFin(duracionMin) {
+    // Filtrar franjas continuas disponibles
+    async function actualizarHorasDisponibles() {
+      const duracionMin = parseInt(dispDuracion.innerText, 10) || 0;
+      const fecha = inpFecha.value;
+
+      if (duracionMin <= 0) {
+        selHoraInicio.innerHTML = '<option value="">Ingrese cajas para calcular duración...</option>';
+        txtHoraFin.innerText = "";
+        return;
+      }
+
+      if (!fecha) {
+        selHoraInicio.innerHTML = '<option value="">Seleccione la fecha de entrega...</option>';
+        txtHoraFin.innerText = "";
+        return;
+      }
+
+      selHoraInicio.innerHTML = '<option value="">Consultando disponibilidad en muelle...</option>';
+
+      let citasOcupadas = [];
+      try {
+        const resp = await fetch(`${URL_APPS_SCRIPT}?fecha=${fecha}`);
+        const data = await resp.json();
+        if (data.status === "success" && data.ocupadas) {
+          citasOcupadas = data.ocupadas;
+        }
+      } catch (e) {
+        console.warn("Consulta sin conexión previa, aplicando filtros locales:", e);
+      }
+
+      selHoraInicio.innerHTML = '<option value="">Seleccione hora disponible...</option>';
+      let slotsValidos = 0;
+
+      FRANJAS_BASE.forEach(horaStr => {
+        const [h, m] = horaStr.split(":").map(Number);
+        const slotInicioMin = h * 60 + m;
+        const slotFinMin = slotInicioMin + duracionMin;
+
+        // 1. Validar que no sobrepase el cierre de las 16:30
+        if (slotFinMin > HORA_CIERRE) return;
+
+        // 2. Validar que no se cruce con el almuerzo (12:00 a 13:00)
+        if (Math.max(slotInicioMin, INICIO_ALMUERZO) < Math.min(slotFinMin, FIN_ALMUERZO)) return;
+
+        // 3. Validar solape con citas existentes ya agendadas
+        const haySolape = citasOcupadas.some(cita => {
+          const [cIniH, cIniM] = String(cita.inicio).split(":").map(Number);
+          const [cFinH, cFinM] = String(cita.fin).split(":").map(Number);
+          const cIni = cIniH * 60 + cIniM;
+          const cFin = cFinH * 60 + cFinM;
+          return Math.max(slotInicioMin, cIni) < Math.min(slotFinMin, cFin);
+        });
+
+        if (!haySolape) {
+          const opt = document.createElement("option");
+          opt.value = horaStr;
+          const periodo = h >= 12 ? "PM" : "AM";
+          const h12 = h > 12 ? h - 12 : (h === 0 ? 12 : h);
+          opt.innerText = `${String(h12).padStart(2, '0')}:${String(m).padStart(2, '0')} ${periodo}`;
+          selHoraInicio.appendChild(opt);
+          slotsValidos++;
+        }
+      });
+
+      if (slotsValidos === 0) {
+        selHoraInicio.innerHTML = '<option value="">⚠️ Sin franjas continuas de ' + duracionMin + 'm para esta fecha</option>';
+      }
+    }
+
+    function actualizarHoraFin() {
       const hora = selHoraInicio.value;
+      const duracionMin = parseInt(dispDuracion.innerText, 10) || 0;
       if (!hora || duracionMin <= 0) {
         txtHoraFin.innerText = "";
         return;
@@ -633,12 +725,8 @@
 
     inpCajasSeca.addEventListener("input", calcularOcupacion);
     inpCavasFrio.addEventListener("input", calcularOcupacion);
-    selHoraInicio.addEventListener("change", () => {
-      const seca = parseInt(inpCajasSeca.value || 0, 10);
-      const frio = parseInt(inpCavasFrio.value || 0, 10);
-      const bloques = Math.ceil((seca + frio) / 50);
-      actualizarHoraFin(bloques * 30);
-    });
+    inpFecha.addEventListener("change", actualizarHorasDisponibles);
+    selHoraInicio.addEventListener("change", actualizarHoraFin);
 
     // Envío del Formulario a Google Apps Script
     formCita.addEventListener("submit", async (e) => {
@@ -652,18 +740,18 @@
         return;
       }
 
-      if (URL_APPS_SCRIPT.includes("PEGA_AQUI")) {
-        alert("Atención Administrador: Debe colocar la URL de su Web App de Google Apps Script en la variable URL_APPS_SCRIPT del archivo HTML.");
+      if (!selHoraInicio.value) {
+        alert("Por favor seleccione un horario válido disponible.");
         return;
       }
 
       const payload = {
         transportadora: document.getElementById("transportadora").value.trim(),
         proveedor: document.getElementById("proveedor").value.trim(),
+        numFacturas: document.getElementById("numFacturas").value.trim(),
         placa: document.getElementById("placa").value.trim().toUpperCase(),
         conductor: document.getElementById("conductor").value.trim(),
         telefono: document.getElementById("telefono").value.trim(),
-        numFacturas: document.getElementById("numFacturas").value,
         cajasSeca: seca,
         cavasFrio: frio,
         fecha: inpFecha.value,
@@ -688,8 +776,8 @@
           document.getElementById("lblResumenDuracion").innerText = `${res.duracionMin} minutos (${res.totalBultos} bultos)`;
           document.getElementById("lblResumenCarga").innerText = res.tipoCarga;
 
-          // Mensaje preconfigurado para WhatsApp
-          const textoWsp = encodeURIComponent(`Hola, tengo agendada la cita de recibo *${res.idCita}* en CEDI Agralba Itagüí para el día ${payload.fecha} a las ${res.horaInicio}. Placa: ${payload.placa}.`);
+          // Enlace directo a WhatsApp de Confirmación
+          const textoWsp = encodeURIComponent(`Hola, tengo agendada la cita de recibo *${res.idCita}* en CEDI Agralba Itagüí para el día ${payload.fecha} a las ${res.horaInicio}. Placa: ${payload.placa}. Facturas: ${payload.numFacturas}.`);
           document.getElementById("linkWhatsApp").href = `https://wa.me/573001234567?text=${textoWsp}`;
 
           document.getElementById("modalExito").style.display = "flex";
@@ -697,11 +785,12 @@
           calcularOcupacion();
         } else if (res.status === "conflict") {
           alert("⚠️ Horario no disponible: " + res.message);
+          actualizarHorasDisponibles();
         } else {
           alert("Error: " + (res.message || "No se pudo procesar la solicitud."));
         }
       } catch (err) {
-        alert("Error de comunicación con el servidor de Agralba: " + err.message);
+        alert("Error de comunicación con el servidor: " + err.message);
       } finally {
         btnEnviar.disabled = false;
         spinner.style.display = "none";
