@@ -10,7 +10,7 @@
 
   <style>
     :root {
-      --primary-color: #006837;        /* Verde corporativo exacto Agralba */
+      --primary-color: #006837;        /* Verde corporativo Agralba */
       --primary-light: #0e8a4d;        /* Verde medio Agralba */
       --accent-color: #f5a623;         /* Amarillo/dorado hoja de la 'a' */
       --accent-cold: #0288d1;          /* Azul cadena de frío */
@@ -164,6 +164,12 @@
       font-weight: bold;
     }
 
+    label .opt {
+      color: #888888;
+      font-weight: normal;
+      font-size: 0.76rem;
+    }
+
     input, select {
       width: 100%;
       padding: 12px 14px;
@@ -268,6 +274,18 @@
     .stat-card .lbl {
       font-size: 0.74rem;
       color: var(--text-muted);
+    }
+
+    .banner-cupo {
+      background: #e8f5e9;
+      border: 1px solid #c8e6c9;
+      color: #2e7d32;
+      padding: 8px 12px;
+      border-radius: 6px;
+      font-size: 0.82rem;
+      font-weight: 600;
+      margin-top: 8px;
+      display: none;
     }
 
     /* Botón Principal */
@@ -400,14 +418,11 @@
     <!-- Encabezado con Logo Blindado de Agralba -->
     <div class="header-card">
       <div class="logo-wrapper">
-        <!-- Intenta cargar el archivo de imagen con bypass de caché; si falla, activa de inmediato el vector SVG -->
-        <img id="imgLogoAgralba" src="./images.png?v=2" alt="Agralba" class="brand-logo" onerror="activarFallbackLogo()">
-        
-        <!-- Logotipo Vectorial SVG de Respaldo Inmediato -->
+        <img id="imgLogoAgralba" src="./images.png?v=3" alt="Agralba" class="brand-logo" onerror="activarFallbackLogo()">
+
         <svg id="svgLogoAgralba" class="svg-logo-fallback" viewBox="0 0 240 60" xmlns="http://www.w3.org/2000/svg">
           <g fill="#006837">
             <text x="5" y="46" font-family="'Montserrat', sans-serif" font-weight="900" font-size="44" letter-spacing="-1.5">agralba</text>
-            <!-- Hoja dorada/naranja sobre la primera 'a' -->
             <path d="M 38 12 C 48 10, 56 16, 56 22 C 46 24, 38 18, 38 12 Z" fill="#f5a623" />
           </g>
         </svg>
@@ -422,7 +437,7 @@
     <div class="main-card">
       <form id="formCita">
 
-        <!-- Sección 1: Bultos y Clasificación con 0 fantasma (placeholder) -->
+        <!-- Sección 1: Cajas y Clasificación con 0 fantasma -->
         <div class="section-title">
           📦 1. Detalle de Carga y Ocupación
         </div>
@@ -450,7 +465,7 @@
           <div class="calc-results">
             <div class="stat-card">
               <div class="val" id="dispBultos">0</div>
-              <div class="lbl">Bultos Totales</div>
+              <div class="lbl">Total Cajas</div>
             </div>
             <div class="stat-card">
               <div class="val" id="dispBloques">0</div>
@@ -463,7 +478,7 @@
           </div>
         </div>
 
-        <!-- Sección 2: Agenda de Horario Dinámico en Hora Colombia (GMT-5) -->
+        <!-- Sección 2: Agenda de Horario Dinámico y Cupo Diario -->
         <div class="section-title">
           📅 2. Fecha y Horarios Disponibles
         </div>
@@ -472,18 +487,19 @@
           <div class="form-group">
             <label for="fechaCita">Fecha de Entrega <span class="req">*</span></label>
             <input type="date" id="fechaCita" required>
+            <div id="bannerCupo" class="banner-cupo"></div>
           </div>
 
           <div class="form-group">
             <label for="horaInicio">Hora de Llegada (Franjas Libres) <span class="req">*</span></label>
             <select id="horaInicio" required>
-              <option value="">Seleccione bultos y fecha primero...</option>
+              <option value="">Seleccione cajas y fecha primero...</option>
             </select>
             <span class="helper-text" id="txtHoraFin"></span>
           </div>
         </div>
 
-        <!-- Sección 3: Datos de Entrega y Transporte -->
+        <!-- Sección 3: Datos de Entrega y Transporte (Placa, Chofer y Tel opcionales) -->
         <div class="section-title">
           🚚 3. Información del Transporte y Proveedor
         </div>
@@ -499,24 +515,24 @@
             <input type="text" id="proveedor" placeholder="Ej. Syngenta, Bayer, Virbac..." required>
           </div>
 
-          <div class="form-group">
+          <div class="form-group full-width">
             <label for="numFacturas">Números de Facturas / Remisiones <span class="req">*</span></label>
             <input type="text" id="numFacturas" placeholder="Ej. FE-8452, FE-8453, REM-102" required>
           </div>
 
           <div class="form-group">
-            <label for="placa">Placa del Vehículo <span class="req">*</span></label>
-            <input type="text" id="placa" placeholder="Ej. SZM-789" maxlength="7" style="text-transform: uppercase;" required>
+            <label for="placa">Placa del Vehículo <span class="opt">(Opcional)</span></label>
+            <input type="text" id="placa" placeholder="Ej. SZM-789" maxlength="7" style="text-transform: uppercase;">
           </div>
 
           <div class="form-group">
-            <label for="conductor">Nombre Conductor <span class="req">*</span></label>
-            <input type="text" id="conductor" placeholder="Nombre completo" required>
+            <label for="conductor">Nombre Conductor <span class="opt">(Opcional)</span></label>
+            <input type="text" id="conductor" placeholder="Nombre completo">
           </div>
 
-          <div class="form-group">
-            <label for="telefono">Celular / WhatsApp Conductor <span class="req">*</span></label>
-            <input type="tel" id="telefono" placeholder="Ej. 3001234567" required>
+          <div class="form-group full-width">
+            <label for="telefono">Celular / WhatsApp Conductor <span class="opt">(Opcional)</span></label>
+            <input type="tel" id="telefono" placeholder="Ej. 3001234567">
           </div>
         </div>
 
@@ -529,7 +545,7 @@
 
       </form>
 
-      <!-- Botón Amigable para Reportar Retrasos -->
+      <!-- Botón para Reportar Retrasos -->
       <div class="delay-section">
         <p style="font-size: 0.85rem; color: #555; margin-bottom: 6px;">¿Ya tienes una cita y presentas retraso en carretera?</p>
         <button type="button" class="btn-delay" onclick="abrirModalRetraso()">
@@ -595,7 +611,6 @@
 
   <!-- Lógica Reactiva y Conexión Backend -->
   <script>
-    // Activación de respaldo visual para el logo en caso de lentitud en red
     function activarFallbackLogo() {
       const img = document.getElementById("imgLogoAgralba");
       const svg = document.getElementById("svgLogoAgralba");
@@ -603,10 +618,8 @@
       if (svg) svg.style.display = "block";
     }
 
-    // URL desplegada del script de Google Drive
     const URL_APPS_SCRIPT = "https://script.google.com/macros/s/AKfycbwUx9ujSubAABIxT1ZQ95bY2M-ylbH7y5nEmpOXrXU_qvFL47xm1DNqsngxS5KcAcqX/exec";
 
-    // Elementos del DOM
     const inpCajasSeca = document.getElementById("cajasSeca");
     const inpCavasFrio = document.getElementById("cavasFrio");
     const tagCarga = document.getElementById("tagCarga");
@@ -619,20 +632,8 @@
     const formCita = document.getElementById("formCita");
     const btnEnviar = document.getElementById("btnEnviar");
     const spinner = document.getElementById("loadingSpinner");
+    const bannerCupo = document.getElementById("bannerCupo");
 
-    // Franjas de inicio teóricas (7:00 AM a 4:00 PM cada 30 min)
-    const FRANJAS_BASE = [
-      "07:00", "07:30", "08:00", "08:30", "09:00", "09:30",
-      "10:00", "10:30", "11:00", "11:30",
-      "13:00", "13:30", "14:00", "14:30", "15:00", "15:30", "16:00"
-    ];
-
-    // Horarios de Almuerzo y Cierre (minutos desde medianoche)
-    const INICIO_ALMUERZO = 12 * 60; // 12:00 PM
-    const FIN_ALMUERZO = 13 * 60;    // 01:00 PM
-    const HORA_CIERRE = 16 * 60 + 30; // 04:30 PM
-
-    // Función auxiliar para obtener la fecha de Colombia en formato YYYY-MM-DD
     function obtenerFechaColombia() {
       const opciones = { timeZone: "America/Bogota", year: "numeric", month: "2-digit", day: "2-digit" };
       const partes = new Intl.DateTimeFormat("en-CA", opciones).formatToParts(new Date());
@@ -642,12 +643,10 @@
       return `${y}-${m}-${d}`;
     }
 
-    // Inicializar fecha mínima en hora colombiana
     const fechaHoyCol = obtenerFechaColombia();
     inpFecha.min = fechaHoyCol;
     inpFecha.value = fechaHoyCol;
 
-    // Conversión de hora texto a minutos enteros
     function parseHoraAMinutos(texto) {
       if (!texto) return null;
       const partes = String(texto).trim().split(":");
@@ -657,7 +656,14 @@
       return (isNaN(h) || isNaN(m)) ? null : (h * 60) + m;
     }
 
-    // Cálculo dinámico de ocupación (acepta campos vacíos con valor 0 por defecto)
+    function formatearMinutosA12H(minutos) {
+      const h = Math.floor(minutos / 60);
+      const m = minutos % 60;
+      const periodo = h >= 12 ? "PM" : "AM";
+      const h12 = h > 12 ? h - 12 : (h === 0 ? 12 : h);
+      return `${String(h12).padStart(2, '0')}:${String(m).padStart(2, '0')} ${periodo}`;
+    }
+
     function calcularOcupacion() {
       const seca = parseInt(inpCajasSeca.value || 0, 10);
       const frio = parseInt(inpCavasFrio.value || 0, 10);
@@ -685,14 +691,15 @@
       dispBloques.innerText = bloques;
       dispDuracion.innerText = duracionMin + " min";
 
-      // Actualizar opciones de horas válidas según la nueva duración
       actualizarHorasDisponibles();
     }
 
-    // Filtrar franjas continuas disponibles
     async function actualizarHorasDisponibles() {
       const duracionMin = parseInt(dispDuracion.innerText, 10) || 0;
+      const totalCajas = parseInt(dispBultos.innerText, 10) || 0;
       const fecha = inpFecha.value;
+
+      bannerCupo.style.display = "none";
 
       if (duracionMin <= 0) {
         selHoraInicio.innerHTML = '<option value="">Ingrese cajas para calcular duración...</option>';
@@ -706,52 +713,108 @@
         return;
       }
 
-      selHoraInicio.innerHTML = '<option value="">Consultando disponibilidad en muelle...</option>';
+      // Validar si es domingo
+      const pF = fecha.split("-");
+      const dt = new Date(parseInt(pF[0], 10), parseInt(pF[1], 10) - 1, parseInt(pF[2], 10));
+      if (dt.getDay() === 0) {
+        selHoraInicio.innerHTML = '<option value="">⚠️ Domingos no hay recepción en CEDI</option>';
+        txtHoraFin.innerText = "";
+        return;
+      }
 
-      let citasOcupadas = [];
+      selHoraInicio.innerHTML = '<option value="">Consultando disponibilidad y cupo en muelle...</option>';
+
+      let resData = null;
       try {
         const resp = await fetch(`${URL_APPS_SCRIPT}?fecha=${fecha}`);
-        const data = await resp.json();
-        if (data.status === "success" && Array.isArray(data.ocupadas)) {
-          citasOcupadas = data.ocupadas;
-        }
+        resData = await resp.json();
       } catch (e) {
         console.warn("Consulta sin conexión previa:", e);
       }
 
+      // Parámetros por defecto si falla conexión
+      const cfg = (resData && resData.config) ? resData.config : {
+        Hora_Inicio_LV: "07:00",
+        Hora_Fin_LV: "14:00",
+        Inicio_Almuerzo: "12:00",
+        Fin_Almuerzo: "13:00",
+        Habilitar_Sabados: "SI",
+        Hora_Inicio_Sab: "07:00",
+        Hora_Fin_Sab: "12:00",
+        Limite_Cajas_LV: 700,
+        Limite_Cajas_Sab: 300
+      };
+
+      const esSabado = (dt.getDay() === 6);
+
+      // Validar si los sábados están habilitados
+      if (esSabado && String(cfg.Habilitar_Sabados || "").toUpperCase() === "NO") {
+        selHoraInicio.innerHTML = '<option value="">⚠️ Sábados no habilitados para recepción</option>';
+        return;
+      }
+
+      // Validar Límite Diario de Cajas
+      const limiteDiario = esSabado ? (parseInt(cfg.Limite_Cajas_Sab, 10) || 300) : (parseInt(cfg.Limite_Cajas_LV, 10) || 700);
+      const cajasHoy = resData ? (resData.cajasAgendadasHoy || 0) : 0;
+      const cupoRestante = Math.max(0, limiteDiario - cajasHoy);
+
+      bannerCupo.innerText = `📊 Cupo del día: ${cajasHoy} / ${limiteDiario} cajas recibidas (${cupoRestante} disponibles)`;
+      bannerCupo.style.display = "block";
+
+      if (cajasHoy >= limiteDiario) {
+        selHoraInicio.innerHTML = `<option value="">⚠️ Cupo diario completado (${limiteDiario} cajas alcanzadas). Seleccione otra fecha.</option>`;
+        txtHoraFin.innerText = "";
+        return;
+      }
+
+      if (totalCajas > cupoRestante) {
+        selHoraInicio.innerHTML = `<option value="">⚠️ Su carga (${totalCajas} cajas) supera el cupo restante (${cupoRestante} cajas). Seleccione otra fecha.</option>`;
+        txtHoraFin.innerText = "";
+        return;
+      }
+
+      // Determinar rangos de horario según el día
+      const horaAperturaStr = esSabado ? cfg.Hora_Inicio_Sab : cfg.Hora_Inicio_LV;
+      const horaCierreStr = esSabado ? cfg.Hora_Fin_Sab : cfg.Hora_Fin_LV;
+
+      const minApertura = parseHoraAMinutos(horaAperturaStr) || (7 * 60);
+      const minCierre = parseHoraAMinutos(horaCierreStr) || (esSabado ? (12 * 60) : (14 * 60));
+      const minIniAlmuerzo = esSabado ? 9999 : (parseHoraAMinutos(cfg.Inicio_Almuerzo) || (12 * 60));
+      const minFinAlmuerzo = esSabado ? 9999 : (parseHoraAMinutos(cfg.Fin_Almuerzo) || (13 * 60));
+
+      const citasOcupadas = (resData && Array.isArray(resData.ocupadas)) ? resData.ocupadas : [];
+
       selHoraInicio.innerHTML = '<option value="">Seleccione hora disponible...</option>';
       let slotsValidos = 0;
 
-      FRANJAS_BASE.forEach(horaStr => {
-        const slotInicioMin = parseHoraAMinutos(horaStr);
-        const slotFinMin = slotInicioMin + duracionMin;
+      // Generación reactiva de bloques de 30 min desde minApertura hasta minCierre
+      for (let m = minApertura; m < minCierre; m += 30) {
+        const slotFinMin = m + duracionMin;
 
-        // 1. Validar que no sobrepase el cierre de las 16:30
-        if (slotFinMin > HORA_CIERRE) return;
+        // 1. Validar que no sobrepase la hora de cierre del muelle
+        if (slotFinMin > minCierre) continue;
 
-        // 2. Validar que no se cruce con el almuerzo (12:00 a 13:00)
-        if (Math.max(slotInicioMin, INICIO_ALMUERZO) < Math.min(slotFinMin, FIN_ALMUERZO)) return;
+        // 2. Validar que no se cruce con el receso de almuerzo (solo entre semana)
+        if (!esSabado && Math.max(m, minIniAlmuerzo) < Math.min(slotFinMin, minFinAlmuerzo)) continue;
 
-        // 3. Validar colisión estricta con citas existentes
+        // 3. Validar solape con citas existentes
         const haySolape = citasOcupadas.some(cita => {
           const cIni = parseHoraAMinutos(cita.inicio);
           const cFin = parseHoraAMinutos(cita.fin);
           if (cIni === null || cFin === null) return false;
-          return Math.max(slotInicioMin, cIni) < Math.min(slotFinMin, cFin);
+          return Math.max(m, cIni) < Math.min(slotFinMin, cFin);
         });
 
         if (!haySolape) {
           const opt = document.createElement("option");
-          opt.value = horaStr;
-          const [hStr, mStr] = horaStr.split(":");
-          const h = parseInt(hStr, 10);
-          const periodo = h >= 12 ? "PM" : "AM";
-          const h12 = h > 12 ? h - 12 : (h === 0 ? 12 : h);
-          opt.innerText = `${String(h12).padStart(2, '0')}:${mStr} ${periodo}`;
+          const hh = String(Math.floor(m / 60)).padStart(2, '0');
+          const mm = String(m % 60).padStart(2, '0');
+          opt.value = `${hh}:${mm}`;
+          opt.innerText = formatearMinutosA12H(m);
           selHoraInicio.appendChild(opt);
           slotsValidos++;
         }
-      });
+      }
 
       if (slotsValidos === 0) {
         selHoraInicio.innerHTML = `<option value="">⚠️ Sin franjas continuas de ${duracionMin}m para esta fecha</option>`;
@@ -769,7 +832,7 @@
       const finTotal = slotInicioMin + duracionMin;
       const finH = String(Math.floor(finTotal / 60)).padStart(2, '0');
       const finM = String(finTotal % 60).padStart(2, '0');
-      txtHoraFin.innerText = `Finalización estimada de descarga: ${finH}:${finM}`;
+      txtHoraFin.innerText = `Finalización estimada de descarga: ${finH}:${finM} (${formatearMinutosA12H(finTotal)})`;
     }
 
     inpCajasSeca.addEventListener("input", calcularOcupacion);
@@ -777,7 +840,7 @@
     inpFecha.addEventListener("change", actualizarHorasDisponibles);
     selHoraInicio.addEventListener("change", actualizarHoraFin);
 
-    // Envío del Formulario a Google Apps Script
+    // Envío del Formulario
     formCita.addEventListener("submit", async (e) => {
       e.preventDefault();
 
@@ -822,11 +885,10 @@
         if (res.status === "success") {
           document.getElementById("lblIdCita").innerText = res.idCita;
           document.getElementById("lblResumenHorario").innerText = `${payload.fecha} de ${res.horaInicio} a ${res.horaFin}`;
-          document.getElementById("lblResumenDuracion").innerText = `${res.duracionMin} minutos (${res.totalBultos} bultos)`;
+          document.getElementById("lblResumenDuracion").innerText = `${res.duracionMin} minutos (${res.totalBultos} cajas)`;
           document.getElementById("lblResumenCarga").innerText = res.tipoCarga;
 
-          // Enlace directo a WhatsApp de Confirmación
-          const textoWsp = encodeURIComponent(`Hola, tengo agendada la cita de recibo *${res.idCita}* en CEDI Agralba Itagüí para el día ${payload.fecha} a las ${res.horaInicio}. Placa: ${payload.placa}. Facturas: ${payload.numFacturas}.`);
+          const textoWsp = encodeURIComponent(`Hola, tengo agendada la cita de recibo *${res.idCita}* en CEDI Agralba Itagüí para el día ${payload.fecha} a las ${res.horaInicio}. Facturas: ${payload.numFacturas}.`);
           document.getElementById("linkWhatsApp").href = `https://wa.me/573001234567?text=${textoWsp}`;
 
           document.getElementById("modalExito").style.display = "flex";
