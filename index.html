@@ -14,7 +14,7 @@
       --primary-light: #0e8a4d;        /* Verde medio Agralba */
       --accent-color: #f5a623;         /* Amarillo/dorado hoja de la 'a' */
       --accent-cold: #0288d1;          /* Azul cadena de frío */
-      --accent-warning: #e65100;       /* Naranja para retrasos */
+      --accent-warning: #e65100;       /* Naranja para alertas y retrasos */
       --bg-light: #f4f6f8;             /* Fondo gris neutro suave */
       --card-bg: #ffffff;
       --text-main: #212529;
@@ -35,7 +35,7 @@
       background-color: var(--bg-light);
       color: var(--text-main);
       line-height: 1.5;
-      padding: 20px 15px 90px 15px; /* Espacio extra abajo por el botón flotante */
+      padding: 20px 15px 95px 15px;
     }
 
     .container {
@@ -52,7 +52,6 @@
       box-shadow: var(--shadow);
       text-align: center;
       margin-bottom: 22px;
-      position: relative;
     }
 
     .logo-wrapper {
@@ -329,7 +328,7 @@
       text-decoration: underline;
     }
 
-    /* Botón Flotante Oficial de WhatsApp "¿Necesitas ayuda?" */
+    /* Botón Flotante Oficial de WhatsApp (SVG Nativo Integrado) */
     .wsp-float {
       position: fixed;
       bottom: 22px;
@@ -340,11 +339,11 @@
       padding: 11px 18px 11px 14px;
       display: flex;
       align-items: center;
-      gap: 10px;
+      gap: 9px;
       text-decoration: none;
       font-family: 'Montserrat', sans-serif;
       font-weight: 700;
-      font-size: 0.9rem;
+      font-size: 0.88rem;
       box-shadow: 0 4px 20px rgba(0, 0, 0, 0.28);
       z-index: 999;
       transition: transform 0.2s, box-shadow 0.2s;
@@ -356,17 +355,57 @@
       box-shadow: 0 6px 26px rgba(0, 0, 0, 0.38);
     }
 
-    .wsp-float img {
-      width: 28px;
-      height: 28px;
-      object-fit: contain;
-      border-radius: 50%;
+    .wsp-float svg {
+      width: 24px;
+      height: 24px;
+      fill: #ffffff;
+      flex-shrink: 0;
     }
 
-    .wsp-float svg {
-      width: 26px;
-      height: 26px;
-      fill: #ffffff;
+    /* Alerta Corporativa Toast (Reemplazo Moderno de alert()) */
+    .toast-alerta {
+      position: fixed;
+      top: 25px;
+      left: 50%;
+      transform: translateX(-50%) translateY(-100px);
+      background: #ffffff;
+      color: #212529;
+      border-left: 6px solid var(--accent-warning);
+      padding: 15px 20px;
+      border-radius: 10px;
+      box-shadow: 0 10px 35px rgba(0, 0, 0, 0.22);
+      z-index: 2000;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      max-width: 92%;
+      width: 530px;
+      font-size: 0.92rem;
+      font-weight: 600;
+      opacity: 0;
+      transition: transform 0.3s ease, opacity 0.3s ease;
+      pointer-events: none;
+    }
+
+    .toast-alerta.visible {
+      transform: translateX(-50%) translateY(0);
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .toast-alerta .toast-icon {
+      font-size: 1.4rem;
+      line-height: 1;
+    }
+
+    .toast-alerta .toast-close {
+      margin-left: auto;
+      background: none;
+      border: none;
+      font-size: 1.2rem;
+      cursor: pointer;
+      color: #888;
+      font-weight: bold;
     }
 
     /* Modales */
@@ -441,12 +480,18 @@
 </head>
 <body>
 
+  <!-- Aviso Toast Flotante Corporativo -->
+  <div id="toastAlerta" class="toast-alerta">
+    <div class="toast-icon">⚠️</div>
+    <div id="toastTexto">Para activar la ayuda es indispensable que completes los campos de Transportadora, Números de Cajas y Fecha Requerida</div>
+    <button type="button" class="toast-close" onclick="cerrarAlerta()">&times;</button>
+  </div>
+
   <div class="container">
     <!-- Encabezado con Logo Blindado de Agralba -->
     <div class="header-card">
       <div class="logo-wrapper">
-        <img id="imgLogoAgralba" src="./images.png?v=5" alt="Agralba" class="brand-logo" onerror="activarFallbackLogo()">
-
+        <img id="imgLogoAgralba" src="./images.png?v=7" alt="Agralba" class="brand-logo" onerror="activarFallbackLogo()">
         <svg id="svgLogoAgralba" class="svg-logo-fallback" viewBox="0 0 240 60" xmlns="http://www.w3.org/2000/svg">
           <g fill="#006837">
             <text x="5" y="46" font-family="'Montserrat', sans-serif" font-weight="900" font-size="44" letter-spacing="-1.5">agralba</text>
@@ -583,10 +628,9 @@
     </div>
   </div>
 
-  <!-- Botón Flotante Oficial de WhatsApp "¿Necesitas ayuda?" -->
+  <!-- Botón Flotante Oficial de WhatsApp (SVG Nativo Puro, Sin Dependencias) -->
   <a id="btnWspAyuda" class="wsp-float" href="#" onclick="abrirWhatsAppAyuda(event)" title="Contactar a Atención CEDI por WhatsApp">
-    <img id="imgLogoWsp" src="Logo_Whatsapp.jpg" alt="WhatsApp" onerror="activarFallbackWsp()">
-    <svg id="svgLogoWsp" style="display:none;" viewBox="0 0 24 24">
+    <svg viewBox="0 0 24 24">
       <path d="M12.04 2c-5.46 0-9.91 4.45-9.91 9.91 0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38c1.45.79 3.08 1.21 4.74 1.21 5.46 0 9.91-4.45 9.91-9.91 0-5.46-4.45-9.92-9.91-9.92zM12.05 20.15c-1.48 0-2.93-.4-4.2-1.15l-.3-.18-3.12.82.83-3.04-.2-.31c-.82-1.31-1.26-2.83-1.26-4.39 0-4.54 3.7-8.24 8.24-8.24 4.55 0 8.25 3.7 8.25 8.24 0 4.54-3.7 8.25-8.24 8.25z"/>
     </svg>
     <span>¿Necesitas ayuda?</span>
@@ -652,13 +696,6 @@
       if (svg) svg.style.display = "block";
     }
 
-    function activarFallbackWsp() {
-      const img = document.getElementById("imgLogoWsp");
-      const svg = document.getElementById("svgLogoWsp");
-      if (img) img.style.display = "none";
-      if (svg) svg.style.display = "block";
-    }
-
     const URL_APPS_SCRIPT = "https://script.google.com/macros/s/AKfycbwUx9ujSubAABIxT1ZQ95bY2M-ylbH7y5nEmpOXrXU_qvFL47xm1DNqsngxS5KcAcqX/exec";
 
     let telefonoAtencionCEDI = "573001234567";
@@ -676,6 +713,22 @@
     const btnEnviar = document.getElementById("btnEnviar");
     const spinner = document.getElementById("loadingSpinner");
     const bannerCupo = document.getElementById("bannerCupo");
+
+    function mostrarAlerta(mensaje) {
+      const toast = document.getElementById("toastAlerta");
+      const txt = document.getElementById("toastTexto");
+      if (!toast || !txt) return;
+      txt.innerText = mensaje;
+      toast.classList.add("visible");
+      setTimeout(() => {
+        toast.classList.remove("visible");
+      }, 5500);
+    }
+
+    function cerrarAlerta() {
+      const toast = document.getElementById("toastAlerta");
+      if (toast) toast.classList.remove("visible");
+    }
 
     function obtenerFechaColombia() {
       const opciones = { timeZone: "America/Bogota", year: "numeric", month: "2-digit", day: "2-digit" };
@@ -707,7 +760,7 @@
       return `${String(h12).padStart(2, '0')}:${String(m).padStart(2, '0')} ${periodo}`;
     }
 
-    // Precarga automática de la configuración al abrir el portal
+    // Precarga de la configuración del CEDI al entrar
     async function cargarConfiguracionInicial() {
       try {
         const resp = await fetch(URL_APPS_SCRIPT);
@@ -892,7 +945,7 @@
     inpFecha.addEventListener("change", actualizarHorasDisponibles);
     selHoraInicio.addEventListener("change", actualizarHoraFin);
 
-    // Función de Validación Guiada y Mensaje Dinámico de WhatsApp (Opción 2)
+    // Validación Asistida y Redirección a WhatsApp con Toast Corporativo
     function abrirWhatsAppAyuda(event) {
       if (event) event.preventDefault();
 
@@ -903,27 +956,35 @@
       const totalCajas = seca + frio;
       const fecha = inpFecha.value;
 
+      let faltantes = false;
+
       if (!transp) {
-        alert("⚠️ Por favor ingresa el nombre de la Transportadora o Aliado para generar tu mensaje de ayuda.");
-        transpInput.focus();
         transpInput.style.borderColor = "var(--accent-warning)";
-        setTimeout(() => transpInput.style.borderColor = "var(--border-color)", 3000);
-        return;
+        setTimeout(() => transpInput.style.borderColor = "var(--border-color)", 4000);
+        faltantes = true;
       }
 
       if (totalCajas <= 0) {
-        alert("⚠️ Por favor ingresa la cantidad de Cajas de Carga Seca o Cavas Refrigeradas que necesitas entregar.");
-        inpCajasSeca.focus();
         inpCajasSeca.style.borderColor = "var(--accent-warning)";
-        setTimeout(() => inpCajasSeca.style.borderColor = "var(--border-color)", 3000);
-        return;
+        inpCavasFrio.style.borderColor = "var(--accent-warning)";
+        setTimeout(() => {
+          inpCajasSeca.style.borderColor = "var(--border-color)";
+          inpCavasFrio.style.borderColor = "var(--border-color)";
+        }, 4000);
+        faltantes = true;
       }
 
       if (!fecha) {
-        alert("⚠️ Por favor selecciona la Fecha de Entrega deseada.");
-        inpFecha.focus();
         inpFecha.style.borderColor = "var(--accent-warning)";
-        setTimeout(() => inpFecha.style.borderColor = "var(--border-color)", 3000);
+        setTimeout(() => inpFecha.style.borderColor = "var(--border-color)", 4000);
+        faltantes = true;
+      }
+
+      if (faltantes) {
+        mostrarAlerta("⚠️ Para activar la ayuda es indispensable que completes los campos de Transportadora, Números de Cajas y Fecha Requerida");
+        if (!transp) transpInput.focus();
+        else if (totalCajas <= 0) inpCajasSeca.focus();
+        else if (!fecha) inpFecha.focus();
         return;
       }
 
@@ -944,12 +1005,12 @@
       const frio = parseInt(inpCavasFrio.value || 0, 10);
 
       if (seca + frio <= 0) {
-        alert("Por favor ingrese la cantidad de cajas de carga seca o cavas refrigeradas.");
+        mostrarAlerta("Por favor ingrese la cantidad de cajas de carga seca o cavas refrigeradas.");
         return;
       }
 
       if (!selHoraInicio.value) {
-        alert("Por favor seleccione un horario válido disponible.");
+        mostrarAlerta("Por favor seleccione un horario válido disponible.");
         return;
       }
 
@@ -988,13 +1049,13 @@
           formCita.reset();
           calcularOcupacion();
         } else if (res.status === "conflict") {
-          alert("⚠️ Horario no disponible: " + res.message);
+          mostrarAlerta("⚠️ Horario no disponible: " + res.message);
           actualizarHorasDisponibles();
         } else {
-          alert("Error: " + (res.message || "No se pudo procesar la solicitud."));
+          mostrarAlerta("Error: " + (res.message || "No se pudo procesar la solicitud."));
         }
       } catch (err) {
-        alert("Error de comunicación con el servidor: " + err.message);
+        mostrarAlerta("Error de comunicación con el servidor: " + err.message);
       } finally {
         btnEnviar.disabled = false;
         spinner.style.display = "none";
@@ -1019,7 +1080,7 @@
       const retrasoMin = document.getElementById("selMinutosRetraso").value;
 
       if (!idCita) {
-        alert("Por favor ingrese el código de radicado de su cita.");
+        mostrarAlerta("Por favor ingrese el código de radicado de su cita.");
         return;
       }
 
@@ -1035,10 +1096,10 @@
         });
 
         const res = await response.json();
-        alert(res.message);
+        mostrarAlerta(res.message);
         cerrarModalRetraso();
       } catch (e) {
-        alert("Error al enviar el reporte: " + e.message);
+        mostrarAlerta("Error al enviar el reporte: " + e.message);
       }
     }
   </script>
