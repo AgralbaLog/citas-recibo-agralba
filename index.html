@@ -1,0 +1,753 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Portal de Citas de Recibo | Agralba Sede Itagüí</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&family=Open+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --primary-color: #1b5e20;        /* Verde institucional oscuro Agralba */
+      --primary-light: #2e7d32;        /* Verde medio */
+      --accent-color: #8bc34a;         /* Verde brote / agricultura */
+      --accent-cold: #0288d1;          /* Azul cadena de frío */
+      --accent-warning: #e65100;       /* Naranja para retrasos */
+      --bg-light: #f4f6f8;             /* Fondo gris neutro suave */
+      --card-bg: #ffffff;
+      --text-main: #212529;
+      --text-muted: #666666;
+      --border-color: #e0e0e0;
+      --radius: 12px;
+      --shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Open Sans', sans-serif;
+      background-color: var(--bg-light);
+      color: var(--text-main);
+      line-height: 1.5;
+      padding: 20px 15px;
+    }
+
+    .container {
+      max-width: 720px;
+      margin: 0 auto;
+    }
+
+    /* Encabezado Corporativo */
+    .header-card {
+      background: linear-gradient(135deg, var(--primary-color), var(--primary-light));
+      color: #ffffff;
+      padding: 28px 24px;
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      text-align: center;
+      margin-bottom: 24px;
+      position: relative;
+    }
+
+    .header-card h1 {
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 800;
+      font-size: 1.6rem;
+      letter-spacing: 0.5px;
+      margin-bottom: 6px;
+      text-transform: uppercase;
+    }
+
+    .header-card p {
+      font-size: 0.95rem;
+      opacity: 0.9;
+    }
+
+    .badge-sede {
+      display: inline-block;
+      background: rgba(255, 255, 255, 0.2);
+      padding: 4px 14px;
+      border-radius: 20px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      margin-top: 10px;
+      border: 1px solid rgba(255, 255, 255, 0.4);
+    }
+
+    /* Tarjeta Principal */
+    .main-card {
+      background: var(--card-bg);
+      border-radius: var(--radius);
+      padding: 30px 24px;
+      box-shadow: var(--shadow);
+      margin-bottom: 20px;
+    }
+
+    .section-title {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: var(--primary-color);
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      border-bottom: 2px solid #eef2f5;
+      padding-bottom: 8px;
+    }
+
+    /* Grillas y Campos de Formulario */
+    .form-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin-bottom: 20px;
+    }
+
+    @media (max-width: 600px) {
+      .form-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .form-group.full-width {
+      grid-column: 1 / -1;
+    }
+
+    label {
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: #333;
+    }
+
+    label .req {
+      color: #d32f2f;
+      font-weight: bold;
+    }
+
+    input, select {
+      width: 100%;
+      padding: 12px 14px;
+      border: 1.5px solid var(--border-color);
+      border-radius: 8px;
+      font-size: 0.95rem;
+      font-family: inherit;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+
+    input:focus, select:focus {
+      outline: none;
+      border-color: var(--primary-light);
+      box-shadow: 0 0 0 3px rgba(46, 125, 50, 0.15);
+    }
+
+    .helper-text {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      margin-top: 2px;
+    }
+
+    /* Panel de Cálculo de Carga y Tiempos */
+    .calc-box {
+      background: #f8faf9;
+      border: 1.5px dashed #c8e6c9;
+      border-radius: 10px;
+      padding: 18px;
+      margin-bottom: 22px;
+    }
+
+    .calc-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+
+    .calc-title {
+      font-size: 0.9rem;
+      font-weight: 700;
+      color: var(--primary-color);
+    }
+
+    .tag-carga {
+      padding: 4px 10px;
+      border-radius: 6px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      background: #e0e0e0;
+      color: #555;
+    }
+
+    .tag-carga.seca {
+      background: #e8f5e9;
+      color: var(--primary-color);
+    }
+
+    .tag-carga.frio {
+      background: #e1f5fe;
+      color: var(--accent-cold);
+    }
+
+    .tag-carga.mixta {
+      background: #fff8e1;
+      color: #b78103;
+    }
+
+    .calc-results {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      text-align: center;
+    }
+
+    .stat-card {
+      background: #ffffff;
+      padding: 10px 8px;
+      border-radius: 8px;
+      border: 1px solid #e0e0e0;
+    }
+
+    .stat-card .val {
+      font-size: 1.25rem;
+      font-weight: 800;
+      color: var(--primary-color);
+      font-family: 'Montserrat', sans-serif;
+    }
+
+    .stat-card .lbl {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+    }
+
+    /* Botón Principal */
+    .btn-submit {
+      width: 100%;
+      background: var(--primary-color);
+      color: #ffffff;
+      padding: 15px;
+      border: none;
+      border-radius: 8px;
+      font-size: 1.05rem;
+      font-weight: 700;
+      font-family: 'Montserrat', sans-serif;
+      cursor: pointer;
+      transition: background 0.3s, transform 0.1s;
+      box-shadow: 0 4px 12px rgba(27, 94, 32, 0.25);
+    }
+
+    .btn-submit:hover {
+      background: var(--primary-light);
+    }
+
+    .btn-submit:active {
+      transform: scale(0.99);
+    }
+
+    .btn-submit:disabled {
+      background: #9e9e9e;
+      cursor: not-allowed;
+    }
+
+    /* Barra Inferior: Notificar Retraso */
+    .delay-section {
+      text-align: center;
+      margin-top: 15px;
+      padding-top: 15px;
+      border-top: 1px solid #eee;
+    }
+
+    .btn-delay {
+      background: none;
+      border: none;
+      color: var(--accent-warning);
+      font-weight: 700;
+      font-size: 0.9rem;
+      cursor: pointer;
+      text-decoration: underline;
+    }
+
+    /* Modal / Popups */
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.5);
+      display: none;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+      z-index: 1000;
+    }
+
+    .modal-box {
+      background: #ffffff;
+      max-width: 480px;
+      width: 100%;
+      border-radius: var(--radius);
+      padding: 25px;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+      text-align: center;
+    }
+
+    .ticket-badge {
+      background: #e8f5e9;
+      color: var(--primary-color);
+      padding: 8px 16px;
+      border-radius: 6px;
+      font-weight: 800;
+      font-size: 1.2rem;
+      display: inline-block;
+      margin: 15px 0;
+      border: 1px dashed var(--primary-light);
+    }
+
+    .btn-whatsapp {
+      background: #25d366;
+      color: #fff;
+      display: inline-block;
+      width: 100%;
+      padding: 12px;
+      border-radius: 8px;
+      text-decoration: none;
+      font-weight: 700;
+      margin-top: 12px;
+    }
+
+    .btn-close-modal {
+      background: #f1f1f1;
+      color: #333;
+      border: none;
+      padding: 10px;
+      width: 100%;
+      border-radius: 8px;
+      margin-top: 8px;
+      cursor: pointer;
+    }
+
+    .spinner {
+      border: 4px solid #f3f3f3;
+      border-top: 4px solid var(--primary-color);
+      border-radius: 50%;
+      width: 32px;
+      height: 32px;
+      animation: spin 1s linear infinite;
+      margin: 10px auto;
+      display: none;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <!-- Encabezado -->
+    <div class="header-card">
+      <h1>Portal de Citas de Recibo</h1>
+      <p>Distribuciones Agralba S.A. | Operaciones & Logística</p>
+      <span class="badge-sede">📍 Sede Activa: CEDI Itagüí</span>
+    </div>
+
+    <!-- Tarjeta Principal del Formulario -->
+    <div class="main-card">
+      <form id="formCita">
+
+        <!-- Sección 1: Datos de Entrega y Transporte -->
+        <div class="section-title">
+          🚚 1. Información del Transporte
+        </div>
+
+        <div class="form-grid">
+          <div class="form-group">
+            <label for="transportadora">Transportadora o Aliado <span class="req">*</span></label>
+            <input type="text" id="transportadora" placeholder="Ej. TCC, Coordinadora, Propio..." required>
+          </div>
+
+          <div class="form-group">
+            <label for="proveedor">Proveedor que envía <span class="req">*</span></label>
+            <input type="text" id="proveedor" placeholder="Ej. Syngenta, Bayer, Agripac..." required>
+          </div>
+
+          <div class="form-group">
+            <label for="placa">Placa del Vehículo <span class="req">*</span></label>
+            <input type="text" id="placa" placeholder="Ej. SZM-789" maxlength="7" style="text-transform: uppercase;" required>
+          </div>
+
+          <div class="form-group">
+            <label for="conductor">Nombre Conductor <span class="req">*</span></label>
+            <input type="text" id="conductor" placeholder="Nombre completo" required>
+          </div>
+
+          <div class="form-group">
+            <label for="telefono">Celular / WhatsApp Conductor <span class="req">*</span></label>
+            <input type="tel" id="telefono" placeholder="Ej. 3001234567" required>
+          </div>
+
+          <div class="form-group">
+            <label for="numFacturas">Número de Facturas / Remisiones <span class="req">*</span></label>
+            <input type="number" id="numFacturas" min="1" value="1" required>
+          </div>
+        </div>
+
+        <!-- Sección 2: Bultos y Clasificación -->
+        <div class="section-title">
+          📦 2. Detalle de Carga y Ocupación
+        </div>
+
+        <div class="form-grid">
+          <div class="form-group">
+            <label for="cajasSeca">Cajas de Carga Seca</label>
+            <input type="number" id="cajasSeca" min="0" value="0" placeholder="0">
+            <span class="helper-text">Agroquímicos, fertilizantes y medicamentos generales.</span>
+          </div>
+
+          <div class="form-group">
+            <label for="cavasFrio">Cavas Carga Refrigerada</label>
+            <input type="number" id="cavasFrio" min="0" value="0" placeholder="0">
+            <span class="helper-text">Biológicos y vacunas (requieren cadena de frío).</span>
+          </div>
+        </div>
+
+        <!-- Caja de Cálculo Dinámico en Vivo -->
+        <div class="calc-box">
+          <div class="calc-header">
+            <span class="calc-title">Resumen de Ocupación en Muelle</span>
+            <span id="tagCarga" class="tag-carga">Sin Carga</span>
+          </div>
+          <div class="calc-results">
+            <div class="stat-card">
+              <div class="val" id="dispBultos">0</div>
+              <div class="lbl">Bultos Totales</div>
+            </div>
+            <div class="stat-card">
+              <div class="val" id="dispBloques">0</div>
+              <div class="lbl">Bloques (30m)</div>
+            </div>
+            <div class="stat-card">
+              <div class="val" id="dispDuracion">0 min</div>
+              <div class="lbl">Tiempo Estimado</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Sección 3: Agenda de Horario -->
+        <div class="section-title">
+          📅 3. Fecha y Hora de Llegada
+        </div>
+
+        <div class="form-grid">
+          <div class="form-group">
+            <label for="fechaCita">Fecha de Entrega <span class="req">*</span></label>
+            <input type="date" id="fechaCita" required>
+          </div>
+
+          <div class="form-group">
+            <label for="horaInicio">Hora de Llegada <span class="req">*</span></label>
+            <select id="horaInicio" required>
+              <option value="">Seleccione hora...</option>
+              <option value="07:00">07:00 AM</option>
+              <option value="07:30">07:30 AM</option>
+              <option value="08:00">08:00 AM</option>
+              <option value="08:30">08:30 AM</option>
+              <option value="09:00">09:00 AM</option>
+              <option value="09:30">09:30 AM</option>
+              <option value="10:00">10:00 AM</option>
+              <option value="10:30">10:30 AM</option>
+              <option value="11:00">11:00 AM</option>
+              <option value="11:30">11:30 AM</option>
+              <!-- 12:00 a 13:00 Bloqueado por Almuerzo de Bodega -->
+              <option value="13:00">01:00 PM</option>
+              <option value="13:30">01:30 PM</option>
+              <option value="14:00">02:00 PM</option>
+              <option value="14:30">02:30 PM</option>
+              <option value="15:00">03:00 PM</option>
+              <option value="15:30">03:30 PM</option>
+              <option value="16:00">04:00 PM</option>
+            </select>
+            <span class="helper-text" id="txtHoraFin"></span>
+          </div>
+        </div>
+
+        <div class="spinner" id="loadingSpinner"></div>
+
+        <button type="submit" class="btn-submit" id="btnEnviar">
+          Confirmar y Reservar Cita de Muelle
+        </button>
+
+      </form>
+
+      <!-- Botón Amigable para Reportar Retrasos -->
+      <div class="delay-section">
+        <p style="font-size: 0.85rem; color: #555; margin-bottom: 6px;">¿Ya tienes una cita y presentas retraso en carretera?</p>
+        <button type="button" class="btn-delay" onclick="abrirModalRetraso()">
+          ⚠️ Notificar Retraso de Cita Existente
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Modal de Éxito / Confirmación -->
+  <div class="modal-overlay" id="modalExito">
+    <div class="modal-box">
+      <div style="font-size: 3rem; margin-bottom: 10px;">✅</div>
+      <h2 style="font-family: 'Montserrat', sans-serif; color: var(--primary-color);">¡Cita Agendada con Éxito!</h2>
+      <p style="font-size: 0.9rem; color: #555; margin-top: 6px;">Conserva tu número de radicado para ingresar al CEDI Itagüí:</p>
+
+      <div class="ticket-badge" id="lblIdCita">AGR-ITA-2026-000</div>
+
+      <div style="text-align: left; background: #f9f9f9; padding: 12px; border-radius: 8px; font-size: 0.85rem; margin-bottom: 15px;">
+        <p><strong>Sede:</strong> CEDI Itagüí (Calle 50 # 42-20)</p>
+        <p><strong>Fecha y Hora:</strong> <span id="lblResumenHorario"></span></p>
+        <p><strong>Duración Estimada:</strong> <span id="lblResumenDuracion"></span></p>
+        <p><strong>Tipo de Carga:</strong> <span id="lblResumenCarga"></span></p>
+      </div>
+
+      <a href="#" id="linkWhatsApp" class="btn-whatsapp" target="_blank">
+        📲 Guardar Confirmación en WhatsApp
+      </a>
+
+      <button type="button" class="btn-close-modal" onclick="cerrarModalExito()">Entendido / Nueva Cita</button>
+    </div>
+  </div>
+
+  <!-- Modal para Reportar Retraso -->
+  <div class="modal-overlay" id="modalRetraso">
+    <div class="modal-box">
+      <h3 style="font-family: 'Montserrat', sans-serif; color: var(--accent-warning); margin-bottom: 10px;">Reportar Retraso en Ruta</h3>
+      <p style="font-size: 0.85rem; color: #555; margin-bottom: 15px;">Ingresa el código de tu cita para notificar a la bodega y evitar la cancelación:</p>
+
+      <div class="form-group" style="text-align: left; margin-bottom: 12px;">
+        <label for="txtCitaRetraso">Código de Cita (Ej. AGR-ITA-20260331-001)</label>
+        <input type="text" id="txtCitaRetraso" placeholder="AGR-ITA-..." style="text-transform: uppercase;">
+      </div>
+
+      <div class="form-group" style="text-align: left; margin-bottom: 18px;">
+        <label for="selMinutosRetraso">Tiempo Estimado de Retraso</label>
+        <select id="selMinutosRetraso">
+          <option value="15">15 Minutos</option>
+          <option value="30" selected>30 Minutos</option>
+          <option value="45">45 Minutos</option>
+          <option value="60">1 Hora o más</option>
+        </select>
+      </div>
+
+      <button type="button" class="btn-submit" style="background: var(--accent-warning);" onclick="enviarReporteRetraso()">
+        Enviar Notificación a Bodega
+      </button>
+
+      <button type="button" class="btn-close-modal" onclick="cerrarModalRetraso()">Volver</button>
+    </div>
+  </div>
+
+  <!-- Lógica y Conexión con Google Apps Script -->
+  <script>
+    // =========================================================================
+    // CONFIGURACIÓN: Reemplaza con tu URL obtenida en el Paso 6 de Apps Script
+    // =========================================================================
+    const URL_APPS_SCRIPT = "https://script.google.com/macros/s/AKfycbwUx9ujSubAABIxT1ZQ95bY2M-ylbH7y5nEmpOXrXU_qvFL47xm1DNqsngxS5KcAcqX/exec";
+
+    // Elementos del DOM
+    const inpCajasSeca = document.getElementById("cajasSeca");
+    const inpCavasFrio = document.getElementById("cavasFrio");
+    const tagCarga = document.getElementById("tagCarga");
+    const dispBultos = document.getElementById("dispBultos");
+    const dispBloques = document.getElementById("dispBloques");
+    const dispDuracion = document.getElementById("dispDuracion");
+    const selHoraInicio = document.getElementById("horaInicio");
+    const txtHoraFin = document.getElementById("txtHoraFin");
+    const formCita = document.getElementById("formCita");
+    const btnEnviar = document.getElementById("btnEnviar");
+    const spinner = document.getElementById("loadingSpinner");
+
+    // Preseleccionar fecha mínima = hoy
+    const inpFecha = document.getElementById("fechaCita");
+    const hoy = new Date().toISOString().split("T")[0];
+    inpFecha.min = hoy;
+    inpFecha.value = hoy;
+
+    // Cálculo dinámico de ocupación
+    function calcularOcupacion() {
+      const seca = parseInt(inpCajasSeca.value || 0, 10);
+      const frio = parseInt(inpCavasFrio.value || 0, 10);
+      const total = seca + frio;
+
+      dispBultos.innerText = total;
+
+      // Determinar Etiqueta de Carga
+      if (seca > 0 && frio > 0) {
+        tagCarga.innerText = "Carga Mixta (Prioridad Frío)";
+        tagCarga.className = "tag-carga mixta";
+      } else if (frio > 0) {
+        tagCarga.innerText = "Refrigerada (Cadena de Frío)";
+        tagCarga.className = "tag-carga frio";
+      } else if (seca > 0) {
+        tagCarga.innerText = "Carga Seca";
+        tagCarga.className = "tag-carga seca";
+      } else {
+        tagCarga.innerText = "Sin Carga";
+        tagCarga.className = "tag-carga";
+      }
+
+      // Cálculo de bloques de 30 min (50 bultos por bloque)
+      const bloques = total > 0 ? Math.ceil(total / 50) : 0;
+      const duracionMin = bloques * 30;
+
+      dispBloques.innerText = bloques;
+      dispDuracion.innerText = duracionMin + " min";
+
+      // Actualizar cálculo de hora final si hay hora de inicio seleccionada
+      actualizarHoraFin(duracionMin);
+    }
+
+    function actualizarHoraFin(duracionMin) {
+      const hora = selHoraInicio.value;
+      if (!hora || duracionMin <= 0) {
+        txtHoraFin.innerText = "";
+        return;
+      }
+      const [h, m] = hora.split(":").map(Number);
+      const finTotal = (h * 60 + m) + duracionMin;
+      const finH = String(Math.floor(finTotal / 60)).padStart(2, '0');
+      const finM = String(finTotal % 60).padStart(2, '0');
+      txtHoraFin.innerText = `Finalización estimada de descarga: ${finH}:${finM}`;
+    }
+
+    inpCajasSeca.addEventListener("input", calcularOcupacion);
+    inpCavasFrio.addEventListener("input", calcularOcupacion);
+    selHoraInicio.addEventListener("change", () => {
+      const seca = parseInt(inpCajasSeca.value || 0, 10);
+      const frio = parseInt(inpCavasFrio.value || 0, 10);
+      const bloques = Math.ceil((seca + frio) / 50);
+      actualizarHoraFin(bloques * 30);
+    });
+
+    // Envío del Formulario a Google Apps Script
+    formCita.addEventListener("submit", async (e) => {
+      e.preventDefault();
+
+      const seca = parseInt(inpCajasSeca.value || 0, 10);
+      const frio = parseInt(inpCavasFrio.value || 0, 10);
+
+      if (seca + frio <= 0) {
+        alert("Por favor ingrese la cantidad de cajas de carga seca o cavas refrigeradas.");
+        return;
+      }
+
+      if (URL_APPS_SCRIPT.includes("PEGA_AQUI")) {
+        alert("Atención Administrador: Debe colocar la URL de su Web App de Google Apps Script en la variable URL_APPS_SCRIPT del archivo HTML.");
+        return;
+      }
+
+      const payload = {
+        transportadora: document.getElementById("transportadora").value.trim(),
+        proveedor: document.getElementById("proveedor").value.trim(),
+        placa: document.getElementById("placa").value.trim().toUpperCase(),
+        conductor: document.getElementById("conductor").value.trim(),
+        telefono: document.getElementById("telefono").value.trim(),
+        numFacturas: document.getElementById("numFacturas").value,
+        cajasSeca: seca,
+        cavasFrio: frio,
+        fecha: inpFecha.value,
+        horaInicio: selHoraInicio.value
+      };
+
+      btnEnviar.disabled = true;
+      spinner.style.display = "block";
+
+      try {
+        const response = await fetch(URL_APPS_SCRIPT, {
+          method: "POST",
+          headers: { "Content-Type": "text/plain;charset=utf-8" },
+          body: JSON.stringify(payload)
+        });
+
+        const res = await response.json();
+
+        if (res.status === "success") {
+          document.getElementById("lblIdCita").innerText = res.idCita;
+          document.getElementById("lblResumenHorario").innerText = `${payload.fecha} de ${res.horaInicio} a ${res.horaFin}`;
+          document.getElementById("lblResumenDuracion").innerText = `${res.duracionMin} minutos (${res.totalBultos} bultos)`;
+          document.getElementById("lblResumenCarga").innerText = res.tipoCarga;
+
+          // Mensaje preconfigurado para WhatsApp
+          const textoWsp = encodeURIComponent(`Hola, tengo agendada la cita de recibo *${res.idCita}* en CEDI Agralba Itagüí para el día ${payload.fecha} a las ${res.horaInicio}. Placa: ${payload.placa}.`);
+          document.getElementById("linkWhatsApp").href = `https://wa.me/573001234567?text=${textoWsp}`;
+
+          document.getElementById("modalExito").style.display = "flex";
+          formCita.reset();
+          calcularOcupacion();
+        } else if (res.status === "conflict") {
+          alert("⚠️ Horario no disponible: " + res.message);
+        } else {
+          alert("Error: " + (res.message || "No se pudo procesar la solicitud."));
+        }
+      } catch (err) {
+        alert("Error de comunicación con el servidor de Agralba: " + err.message);
+      } finally {
+        btnEnviar.disabled = false;
+        spinner.style.display = "none";
+      }
+    });
+
+    // Gestión del Modal de Retraso
+    function abrirModalRetraso() {
+      document.getElementById("modalRetraso").style.display = "flex";
+    }
+
+    function cerrarModalRetraso() {
+      document.getElementById("modalRetraso").style.display = "none";
+    }
+
+    function cerrarModalExito() {
+      document.getElementById("modalExito").style.display = "none";
+    }
+
+    async function enviarReporteRetraso() {
+      const idCita = document.getElementById("txtCitaRetraso").value.trim().toUpperCase();
+      const retrasoMin = document.getElementById("selMinutosRetraso").value;
+
+      if (!idCita) {
+        alert("Por favor ingrese el código de radicado de su cita.");
+        return;
+      }
+
+      try {
+        const response = await fetch(URL_APPS_SCRIPT, {
+          method: "POST",
+          headers: { "Content-Type": "text/plain;charset=utf-8" },
+          body: JSON.stringify({
+            accion: "notificar_retraso",
+            idCita: idCita,
+            retrasoMin: retrasoMin
+          })
+        });
+
+        const res = await response.json();
+        alert(res.message);
+        cerrarModalRetraso();
+      } catch (e) {
+        alert("Error al enviar el reporte: " + e.message);
+      }
+    }
+  </script>
+</body>
+</html>
