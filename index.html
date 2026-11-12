@@ -10,9 +10,9 @@
 
   <style>
     :root {
-      --primary-color: #0e5835;        /* Verde corporativo oscuro Agralba */
-      --primary-light: #1b7a48;        /* Verde medio Agralba */
-      --accent-color: #f7a600;         /* Tono naranja/dorado hoja Agralba */
+      --primary-color: #006837;        /* Verde corporativo exacto Agralba */
+      --primary-light: #0e8a4d;        /* Verde medio Agralba */
+      --accent-color: #f5a623;         /* Amarillo/dorado hoja de la 'a' */
       --accent-cold: #0288d1;          /* Azul cadena de frío */
       --accent-warning: #e65100;       /* Naranja para retrasos */
       --bg-light: #f4f6f8;             /* Fondo gris neutro suave */
@@ -55,22 +55,31 @@
       position: relative;
     }
 
-    /* Contenedor del Logo */
+    /* Contenedor del Logo con Pastilla Blanca Nítida */
     .logo-wrapper {
-      display: flex;
+      display: inline-flex;
       justify-content: center;
       align-items: center;
-      margin-bottom: 12px;
+      background: #ffffff;
+      padding: 8px 24px;
+      border-radius: 12px;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.16);
+      margin-bottom: 14px;
+      min-height: 56px;
     }
 
     .brand-logo {
-      max-height: 62px;
+      max-height: 44px;
       width: auto;
-      border-radius: 10px;
-      background: #ffffff;
-      padding: 6px 16px;
-      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.15);
       object-fit: contain;
+      display: block;
+    }
+
+    /* Logo Vectorial de Respaldo */
+    .svg-logo-fallback {
+      display: none;
+      height: 40px;
+      width: auto;
     }
 
     .header-card h1 {
@@ -166,7 +175,7 @@
       background: #ffffff;
     }
 
-    /* Supresión de flechas en inputs numéricos */
+    /* Supresión estricta de flechas en inputs numéricos */
     input[type=number]::-webkit-inner-spin-button, 
     input[type=number]::-webkit-outer-spin-button { 
       -webkit-appearance: none; 
@@ -179,7 +188,7 @@
     input:focus, select:focus {
       outline: none;
       border-color: var(--primary-light);
-      box-shadow: 0 0 0 3px rgba(27, 122, 72, 0.18);
+      box-shadow: 0 0 0 3px rgba(0, 104, 55, 0.18);
     }
 
     .helper-text {
@@ -274,7 +283,7 @@
       font-family: 'Montserrat', sans-serif;
       cursor: pointer;
       transition: background 0.3s, transform 0.1s;
-      box-shadow: 0 4px 14px rgba(14, 88, 53, 0.25);
+      box-shadow: 0 4px 14px rgba(0, 104, 55, 0.25);
     }
 
     .btn-submit:hover {
@@ -388,11 +397,22 @@
 <body>
 
   <div class="container">
-    <!-- Encabezado con Logo Oficial de Agralba -->
+    <!-- Encabezado con Logo Blindado de Agralba -->
     <div class="header-card">
       <div class="logo-wrapper">
-        <img src="images.jpeg" alt="Logo Agralba" class="brand-logo" onerror="this.onerror=null; this.src='logo.png';">
+        <!-- Intenta cargar el archivo de imagen con bypass de caché; si falla, activa de inmediato el vector SVG -->
+        <img id="imgLogoAgralba" src="./images.png?v=2" alt="Agralba" class="brand-logo" onerror="activarFallbackLogo()">
+        
+        <!-- Logotipo Vectorial SVG de Respaldo Inmediato -->
+        <svg id="svgLogoAgralba" class="svg-logo-fallback" viewBox="0 0 240 60" xmlns="http://www.w3.org/2000/svg">
+          <g fill="#006837">
+            <text x="5" y="46" font-family="'Montserrat', sans-serif" font-weight="900" font-size="44" letter-spacing="-1.5">agralba</text>
+            <!-- Hoja dorada/naranja sobre la primera 'a' -->
+            <path d="M 38 12 C 48 10, 56 16, 56 22 C 46 24, 38 18, 38 12 Z" fill="#f5a623" />
+          </g>
+        </svg>
       </div>
+
       <h1>Portal de Citas de Recibo</h1>
       <p>Distribuciones Agralba S.A. | Operaciones & Logística</p>
       <span class="badge-sede">📍 Sede Activa: CEDI Itagüí</span>
@@ -502,7 +522,7 @@
 
         <div class="spinner" id="loadingSpinner"></div>
 
-        <!-- Botón Principal con nuevo nombre -->
+        <!-- Botón Principal -->
         <button type="submit" class="btn-submit" id="btnEnviar">
           Confirmar y Reservar Cita
         </button>
@@ -575,6 +595,14 @@
 
   <!-- Lógica Reactiva y Conexión Backend -->
   <script>
+    // Activación de respaldo visual para el logo en caso de lentitud en red
+    function activarFallbackLogo() {
+      const img = document.getElementById("imgLogoAgralba");
+      const svg = document.getElementById("svgLogoAgralba");
+      if (img) img.style.display = "none";
+      if (svg) svg.style.display = "block";
+    }
+
     // URL desplegada del script de Google Drive
     const URL_APPS_SCRIPT = "https://script.google.com/macros/s/AKfycbwUx9ujSubAABIxT1ZQ95bY2M-ylbH7y5nEmpOXrXU_qvFL47xm1DNqsngxS5KcAcqX/exec";
 
