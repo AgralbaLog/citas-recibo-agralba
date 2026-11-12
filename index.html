@@ -35,7 +35,7 @@
       background-color: var(--bg-light);
       color: var(--text-main);
       line-height: 1.5;
-      padding: 20px 15px;
+      padding: 20px 15px 80px 15px; /* Espacio extra abajo por el botón flotante */
     }
 
     .container {
@@ -55,7 +55,6 @@
       position: relative;
     }
 
-    /* Contenedor del Logo con Pastilla Blanca Nítida */
     .logo-wrapper {
       display: inline-flex;
       justify-content: center;
@@ -75,7 +74,6 @@
       display: block;
     }
 
-    /* Logo Vectorial de Respaldo */
     .svg-logo-fallback {
       display: none;
       height: 40px;
@@ -129,7 +127,6 @@
       padding-bottom: 8px;
     }
 
-    /* Grillas y Campos de Formulario */
     .form-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
@@ -181,7 +178,6 @@
       background: #ffffff;
     }
 
-    /* Supresión estricta de flechas en inputs numéricos */
     input[type=number]::-webkit-inner-spin-button, 
     input[type=number]::-webkit-outer-spin-button { 
       -webkit-appearance: none; 
@@ -288,7 +284,6 @@
       display: none;
     }
 
-    /* Botón Principal */
     .btn-submit {
       width: 100%;
       background: var(--primary-color);
@@ -317,7 +312,6 @@
       cursor: not-allowed;
     }
 
-    /* Barra Inferior: Notificar Retraso */
     .delay-section {
       text-align: center;
       margin-top: 15px;
@@ -333,6 +327,46 @@
       font-size: 0.9rem;
       cursor: pointer;
       text-decoration: underline;
+    }
+
+    /* Botón Flotante Oficial de WhatsApp "¿Necesitas ayuda?" */
+    .wsp-float {
+      position: fixed;
+      bottom: 22px;
+      right: 22px;
+      background-color: #25d366;
+      color: #ffffff;
+      border-radius: 30px;
+      padding: 10px 18px 10px 14px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 700;
+      font-size: 0.88rem;
+      box-shadow: 0 4px 18px rgba(0, 0, 0, 0.25);
+      z-index: 999;
+      transition: transform 0.2s, box-shadow 0.2s;
+      cursor: pointer;
+    }
+
+    .wsp-float:hover {
+      transform: scale(1.05);
+      box-shadow: 0 6px 24px rgba(0, 0, 0, 0.35);
+    }
+
+    .wsp-float img {
+      width: 28px;
+      height: 28px;
+      object-fit: contain;
+      border-radius: 50%;
+    }
+
+    .wsp-float svg {
+      width: 26px;
+      height: 26px;
+      fill: #ffffff;
     }
 
     /* Modales */
@@ -372,27 +406,20 @@
       border: 1px dashed var(--primary-light);
     }
 
-    .btn-whatsapp {
-      background: #25d366;
-      color: #fff;
-      display: inline-block;
-      width: 100%;
-      padding: 12px;
-      border-radius: 8px;
-      text-decoration: none;
-      font-weight: 700;
-      margin-top: 12px;
-    }
-
     .btn-close-modal {
       background: #f1f1f1;
       color: #333;
       border: none;
-      padding: 10px;
+      padding: 12px;
       width: 100%;
       border-radius: 8px;
-      margin-top: 8px;
+      margin-top: 14px;
       cursor: pointer;
+      font-weight: 600;
+    }
+
+    .btn-close-modal:hover {
+      background: #e5e5e5;
     }
 
     .spinner {
@@ -418,7 +445,7 @@
     <!-- Encabezado con Logo Blindado de Agralba -->
     <div class="header-card">
       <div class="logo-wrapper">
-        <img id="imgLogoAgralba" src="./images.png?v=3" alt="Agralba" class="brand-logo" onerror="activarFallbackLogo()">
+        <img id="imgLogoAgralba" src="./images.png?v=4" alt="Agralba" class="brand-logo" onerror="activarFallbackLogo()">
 
         <svg id="svgLogoAgralba" class="svg-logo-fallback" viewBox="0 0 240 60" xmlns="http://www.w3.org/2000/svg">
           <g fill="#006837">
@@ -556,7 +583,16 @@
     </div>
   </div>
 
-  <!-- Modal de Éxito / Confirmación -->
+  <!-- Botón Flotante Oficial de WhatsApp "¿Necesitas ayuda?" -->
+  <a id="btnWspAyuda" class="wsp-float" href="#" onclick="abrirWhatsAppAyuda(event)" title="Contactar a Atención CEDI por WhatsApp">
+    <img id="imgLogoWsp" src="Logo_Whatsapp.jpg" alt="WhatsApp" onerror="activarFallbackWsp()">
+    <svg id="svgLogoWsp" style="display:none;" viewBox="0 0 24 24">
+      <path d="M12.04 2c-5.46 0-9.91 4.45-9.91 9.91 0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38c1.45.79 3.08 1.21 4.74 1.21 5.46 0 9.91-4.45 9.91-9.91 0-5.46-4.45-9.92-9.91-9.92zM12.05 20.15c-1.48 0-2.93-.4-4.2-1.15l-.3-.18-3.12.82.83-3.04-.2-.31c-.82-1.31-1.26-2.83-1.26-4.39 0-4.54 3.7-8.24 8.24-8.24 4.55 0 8.25 3.7 8.25 8.24 0 4.54-3.7 8.25-8.24 8.25z"/>
+    </svg>
+    <span>¿Necesitas ayuda?</span>
+  </a>
+
+  <!-- Modal de Éxito / Confirmación 100% Limpio (Sin WhatsApp) -->
   <div class="modal-overlay" id="modalExito">
     <div class="modal-box">
       <div style="font-size: 3rem; margin-bottom: 10px;">✅</div>
@@ -565,16 +601,14 @@
 
       <div class="ticket-badge" id="lblIdCita">AGR-ITA-2026-000</div>
 
-      <div style="text-align: left; background: #f9f9f9; padding: 12px; border-radius: 8px; font-size: 0.85rem; margin-bottom: 15px;">
+      <div style="text-align: left; background: #f9f9f9; padding: 12px; border-radius: 8px; font-size: 0.85rem; margin-bottom: 10px;">
         <p><strong>Sede:</strong> CEDI Itagüí (Calle 50 # 42-20)</p>
         <p><strong>Fecha y Hora:</strong> <span id="lblResumenHorario"></span></p>
         <p><strong>Duración Estimada:</strong> <span id="lblResumenDuracion"></span></p>
         <p><strong>Tipo de Carga:</strong> <span id="lblResumenCarga"></span></p>
       </div>
 
-      <a href="#" id="linkWhatsApp" class="btn-whatsapp" target="_blank">
-        📲 Guardar Confirmación en WhatsApp
-      </a>
+      <p style="font-size: 0.8rem; color: #777;">Toma una captura de pantalla de este comprobante para presentar en la portería de recibo.</p>
 
       <button type="button" class="btn-close-modal" onclick="cerrarModalExito()">Entendido / Nueva Cita</button>
     </div>
@@ -618,7 +652,16 @@
       if (svg) svg.style.display = "block";
     }
 
+    function activarFallbackWsp() {
+      const img = document.getElementById("imgLogoWsp");
+      const svg = document.getElementById("svgLogoWsp");
+      if (img) img.style.display = "none";
+      if (svg) svg.style.display = "block";
+    }
+
     const URL_APPS_SCRIPT = "https://script.google.com/macros/s/AKfycbwUx9ujSubAABIxT1ZQ95bY2M-ylbH7y5nEmpOXrXU_qvFL47xm1DNqsngxS5KcAcqX/exec";
+
+    let telefonoAtencionCEDI = "573001234567";
 
     const inpCajasSeca = document.getElementById("cajasSeca");
     const inpCavasFrio = document.getElementById("cavasFrio");
@@ -713,7 +756,6 @@
         return;
       }
 
-      // Validar si es domingo
       const pF = fecha.split("-");
       const dt = new Date(parseInt(pF[0], 10), parseInt(pF[1], 10) - 1, parseInt(pF[2], 10));
       if (dt.getDay() === 0) {
@@ -732,28 +774,30 @@
         console.warn("Consulta sin conexión previa:", e);
       }
 
-      // Parámetros por defecto si falla conexión
       const cfg = (resData && resData.config) ? resData.config : {
-        Hora_Inicio_LV: "07:00",
+        Hora_Inicio_LV: "7:00",
         Hora_Fin_LV: "14:00",
         Inicio_Almuerzo: "12:00",
         Fin_Almuerzo: "13:00",
         Habilitar_Sabados: "SI",
-        Hora_Inicio_Sab: "07:00",
+        Hora_Inicio_Sab: "7:00",
         Hora_Fin_Sab: "12:00",
         Limite_Cajas_LV: 700,
-        Limite_Cajas_Sab: 300
+        Limite_Cajas_Sab: 300,
+        WhatsApp_Atención_CEDI: "573001234567"
       };
+
+      if (cfg.WhatsApp_Atención_CEDI) {
+        telefonoAtencionCEDI = String(cfg.WhatsApp_Atención_CEDI).replace(/\D/g, '');
+      }
 
       const esSabado = (dt.getDay() === 6);
 
-      // Validar si los sábados están habilitados
       if (esSabado && String(cfg.Habilitar_Sabados || "").toUpperCase() === "NO") {
         selHoraInicio.innerHTML = '<option value="">⚠️ Sábados no habilitados para recepción</option>';
         return;
       }
 
-      // Validar Límite Diario de Cajas
       const limiteDiario = esSabado ? (parseInt(cfg.Limite_Cajas_Sab, 10) || 300) : (parseInt(cfg.Limite_Cajas_LV, 10) || 700);
       const cajasHoy = resData ? (resData.cajasAgendadasHoy || 0) : 0;
       const cupoRestante = Math.max(0, limiteDiario - cajasHoy);
@@ -773,7 +817,6 @@
         return;
       }
 
-      // Determinar rangos de horario según el día
       const horaAperturaStr = esSabado ? cfg.Hora_Inicio_Sab : cfg.Hora_Inicio_LV;
       const horaCierreStr = esSabado ? cfg.Hora_Fin_Sab : cfg.Hora_Fin_LV;
 
@@ -787,17 +830,12 @@
       selHoraInicio.innerHTML = '<option value="">Seleccione hora disponible...</option>';
       let slotsValidos = 0;
 
-      // Generación reactiva de bloques de 30 min desde minApertura hasta minCierre
       for (let m = minApertura; m < minCierre; m += 30) {
         const slotFinMin = m + duracionMin;
 
-        // 1. Validar que no sobrepase la hora de cierre del muelle
         if (slotFinMin > minCierre) continue;
-
-        // 2. Validar que no se cruce con el receso de almuerzo (solo entre semana)
         if (!esSabado && Math.max(m, minIniAlmuerzo) < Math.min(slotFinMin, minFinAlmuerzo)) continue;
 
-        // 3. Validar solape con citas existentes
         const haySolape = citasOcupadas.some(cita => {
           const cIni = parseHoraAMinutos(cita.inicio);
           const cFin = parseHoraAMinutos(cita.fin);
@@ -839,6 +877,22 @@
     inpCavasFrio.addEventListener("input", calcularOcupacion);
     inpFecha.addEventListener("change", actualizarHorasDisponibles);
     selHoraInicio.addEventListener("change", actualizarHoraFin);
+
+    // Función para el Botón Flotante con Mensaje Dinámico
+    function abrirWhatsAppAyuda(event) {
+      if (event) event.preventDefault();
+
+      const transpInput = document.getElementById("transportadora").value.trim();
+      const transp = transpInput ? transpInput : "[Transportadora o Aliado]";
+      const fecha = inpFecha.value ? inpFecha.value : "[Fecha de Entrega]";
+
+      const mensaje = `Hola, te escribo de ${transp}, tengo una entrega de mercancía en el CEDI Agralba Itagüí y no hay espacio disponible para el ${fecha}, ¿puedes por favor revisar?`;
+
+      const numLimpio = telefonoAtencionCEDI.replace(/\D/g, '') || "573001234567";
+      const urlFinal = `https://wa.me/${numLimpio}?text=${encodeURIComponent(mensaje)}`;
+
+      window.open(urlFinal, "_blank");
+    }
 
     // Envío del Formulario
     formCita.addEventListener("submit", async (e) => {
@@ -887,9 +941,6 @@
           document.getElementById("lblResumenHorario").innerText = `${payload.fecha} de ${res.horaInicio} a ${res.horaFin}`;
           document.getElementById("lblResumenDuracion").innerText = `${res.duracionMin} minutos (${res.totalBultos} cajas)`;
           document.getElementById("lblResumenCarga").innerText = res.tipoCarga;
-
-          const textoWsp = encodeURIComponent(`Hola, tengo agendada la cita de recibo *${res.idCita}* en CEDI Agralba Itagüí para el día ${payload.fecha} a las ${res.horaInicio}. Facturas: ${payload.numFacturas}.`);
-          document.getElementById("linkWhatsApp").href = `https://wa.me/573001234567?text=${textoWsp}`;
 
           document.getElementById("modalExito").style.display = "flex";
           formCita.reset();
