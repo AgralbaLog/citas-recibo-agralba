@@ -3,6 +3,12 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <!-- Directivas estrictas para evitar que los navegadores guarden el HTML en memoria caché -->
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
+
   <title>Portal de Citas de Recibo | Agralba Sede Itagüí</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -505,7 +511,7 @@
     <!-- Encabezado con Logo Blindado de Agralba -->
     <div class="header-card">
       <div class="logo-wrapper">
-        <img id="imgLogoAgralba" src="./images.png?v=11" alt="Agralba" class="brand-logo" onerror="activarFallbackLogo()">
+        <img id="imgLogoAgralba" src="./images.png?v=12" alt="Agralba" class="brand-logo" onerror="activarFallbackLogo()">
         <svg id="svgLogoAgralba" class="svg-logo-fallback" viewBox="0 0 240 60" xmlns="http://www.w3.org/2000/svg">
           <g fill="#006837">
             <text x="5" y="46" font-family="'Montserrat', sans-serif" font-weight="900" font-size="44" letter-spacing="-1.5">agralba</text>
@@ -787,10 +793,11 @@
       return `${String(h12).padStart(2, '0')}:${String(m).padStart(2, '0')} ${periodo}`;
     }
 
-    // Precarga de la configuración del CEDI al entrar
+    // Precarga de la configuración del CEDI al entrar (Con rompedor de caché dinámico)
     async function cargarConfiguracionInicial() {
       try {
-        const resp = await fetch(URL_APPS_SCRIPT);
+        const cacheBuster = `_t=${Date.now()}`;
+        const resp = await fetch(`${URL_APPS_SCRIPT}?${cacheBuster}`);
         const data = await resp.json();
         if (data && data.config) {
           if (data.config.WhatsApp_Atención_CEDI) {
@@ -881,7 +888,8 @@
 
       let resData = null;
       try {
-        const resp = await fetch(`${URL_APPS_SCRIPT}?fecha=${fecha}`);
+        const cacheBuster = `_t=${Date.now()}`;
+        const resp = await fetch(`${URL_APPS_SCRIPT}?fecha=${fecha}&${cacheBuster}`);
         resData = await resp.json();
       } catch (e) {
         console.warn("Consulta sin conexión previa:", e);
