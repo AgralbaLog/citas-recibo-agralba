@@ -491,7 +491,7 @@
     <!-- Encabezado con Logo Blindado de Agralba -->
     <div class="header-card">
       <div class="logo-wrapper">
-        <img id="imgLogoAgralba" src="./images.png?v=7" alt="Agralba" class="brand-logo" onerror="activarFallbackLogo()">
+        <img id="imgLogoAgralba" src="./images.png?v=8" alt="Agralba" class="brand-logo" onerror="activarFallbackLogo()">
         <svg id="svgLogoAgralba" class="svg-logo-fallback" viewBox="0 0 240 60" xmlns="http://www.w3.org/2000/svg">
           <g fill="#006837">
             <text x="5" y="46" font-family="'Montserrat', sans-serif" font-weight="900" font-size="44" letter-spacing="-1.5">agralba</text>
@@ -698,7 +698,9 @@
 
     const URL_APPS_SCRIPT = "https://script.google.com/macros/s/AKfycbwUx9ujSubAABIxT1ZQ95bY2M-ylbH7y5nEmpOXrXU_qvFL47xm1DNqsngxS5KcAcqX/exec";
 
-    let telefonoAtencionCEDI = "573001234567";
+    let telefonoAtencionCEDI = "573112219284";
+    let cajasPorMinutoConfig = 6;
+    let tiempoMinimoCitaConfig = 30;
 
     const inpCajasSeca = document.getElementById("cajasSeca");
     const inpCavasFrio = document.getElementById("cavasFrio");
@@ -765,8 +767,17 @@
       try {
         const resp = await fetch(URL_APPS_SCRIPT);
         const data = await resp.json();
-        if (data && data.config && data.config.WhatsApp_Atención_CEDI) {
-          telefonoAtencionCEDI = String(data.config.WhatsApp_Atención_CEDI).replace(/\D/g, '');
+        if (data && data.config) {
+          if (data.config.WhatsApp_Atención_CEDI) {
+            telefonoAtencionCEDI = String(data.config.WhatsApp_Atención_CEDI).replace(/\D/g, '');
+          }
+          if (data.config.Cajas_Por_Minuto) {
+            cajasPorMinutoConfig = parseFloat(data.config.Cajas_Por_Minuto) || 6;
+          }
+          if (data.config.Tiempo_Minimo_Cita_Min) {
+            tiempoMinimoCitaConfig = parseInt(data.config.Tiempo_Minimo_Cita_Min, 10) || 30;
+          }
+          calcularOcupacion();
         }
       } catch (err) {
         console.warn("Precarga inicial:", err);
@@ -795,8 +806,16 @@
         tagCarga.className = "tag-carga";
       }
 
-      const bloques = total > 0 ? Math.ceil(total / 50) : 0;
-      const duracionMin = bloques * 30;
+      // Cálculo según ratio de 6 cajas por minuto con piso de tiempo mínimo
+      let bloques = 0;
+      let duracionMin = 0;
+
+      if (total > 0) {
+        const tiempoTeorico = total / cajasPorMinutoConfig;
+        const bloquesCalculados = Math.ceil(tiempoTeorico / 30);
+        duracionMin = Math.max(tiempoMinimoCitaConfig, bloquesCalculados * 30);
+        bloques = duracionMin / 30;
+      }
 
       dispBloques.innerText = bloques;
       dispDuracion.innerText = duracionMin + " min";
@@ -851,7 +870,9 @@
         Hora_Fin_Sab: "12:00",
         Limite_Cajas_LV: 700,
         Limite_Cajas_Sab: 300,
-        WhatsApp_Atención_CEDI: "573001234567"
+        Cajas_Por_Minuto: 6,
+        Tiempo_Minimo_Cita_Min: 30,
+        WhatsApp_Atención_CEDI: "573112219284"
       };
 
       if (cfg.WhatsApp_Atención_CEDI) {
@@ -990,7 +1011,7 @@
 
       const mensaje = `Hola, te escribo de ${transp}, tengo una entrega de ${totalCajas} cajas para el CEDI Agralba Itagüí y no hay espacio disponible para el ${fecha}, ¿puedes por favor revisar?`;
 
-      let numLimpio = telefonoAtencionCEDI.replace(/\D/g, '') || "573001234567";
+      let numLimpio = telefonoAtencionCEDI.replace(/\D/g, '') || "573112219284";
       if (numLimpio.length === 10) numLimpio = "57" + numLimpio;
 
       const urlFinal = `https://wa.me/${numLimpio}?text=${encodeURIComponent(mensaje)}`;
