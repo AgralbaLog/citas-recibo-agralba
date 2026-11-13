@@ -197,6 +197,13 @@
       box-shadow: 0 0 0 3px rgba(0, 104, 55, 0.18);
     }
 
+    select:disabled, input:disabled {
+      background-color: #f1f3f5;
+      color: #777777;
+      cursor: not-allowed;
+      border-color: #d1d5db;
+    }
+
     .helper-text {
       font-size: 0.74rem;
       color: var(--text-muted);
@@ -276,16 +283,18 @@
       color: var(--text-muted);
     }
 
+    /* Tarjeta de Alerta de Sobrecupo (Ámbar) */
     .banner-cupo {
-      background: #e8f5e9;
-      border: 1px solid #c8e6c9;
-      color: #2e7d32;
-      padding: 8px 12px;
-      border-radius: 6px;
-      font-size: 0.82rem;
+      background: #fff3e0;
+      border: 1.5px solid #ffb74d;
+      color: #b75300;
+      padding: 10px 12px;
+      border-radius: 8px;
+      font-size: 0.83rem;
       font-weight: 600;
-      margin-top: 8px;
+      margin-top: 10px;
       display: none;
+      line-height: 1.4;
     }
 
     .btn-submit {
@@ -496,7 +505,7 @@
     <!-- Encabezado con Logo Blindado de Agralba -->
     <div class="header-card">
       <div class="logo-wrapper">
-        <img id="imgLogoAgralba" src="./images.png?v=9" alt="Agralba" class="brand-logo" onerror="activarFallbackLogo()">
+        <img id="imgLogoAgralba" src="./images.png?v=11" alt="Agralba" class="brand-logo" onerror="activarFallbackLogo()">
         <svg id="svgLogoAgralba" class="svg-logo-fallback" viewBox="0 0 240 60" xmlns="http://www.w3.org/2000/svg">
           <g fill="#006837">
             <text x="5" y="46" font-family="'Montserrat', sans-serif" font-weight="900" font-size="44" letter-spacing="-1.5">agralba</text>
@@ -564,6 +573,7 @@
           <div class="form-group">
             <label for="fechaCita">Fecha de Entrega <span class="req">*</span></label>
             <input type="date" id="fechaCita" required>
+            <!-- Alerta Ámbar en caso de sobrecupo (oculta por defecto) -->
             <div id="bannerCupo" class="banner-cupo"></div>
           </div>
 
@@ -821,7 +831,6 @@
         tagCarga.className = "tag-carga";
       }
 
-      // Cálculo según ratio de 6 cajas por minuto con piso de tiempo mínimo
       let bloques = 0;
       let duracionMin = 0;
 
@@ -844,6 +853,8 @@
       const fecha = inpFecha.value;
 
       bannerCupo.style.display = "none";
+      bannerCupo.innerHTML = "";
+      selHoraInicio.disabled = false;
 
       if (duracionMin <= 0) {
         selHoraInicio.innerHTML = '<option value="">Ingrese cajas para calcular duración...</option>';
@@ -860,12 +871,13 @@
       const pF = fecha.split("-");
       const dt = new Date(parseInt(pF[0], 10), parseInt(pF[1], 10) - 1, parseInt(pF[2], 10));
       if (dt.getDay() === 0) {
+        selHoraInicio.disabled = true;
         selHoraInicio.innerHTML = '<option value="">⚠️ Domingos no hay recepción en CEDI</option>';
         txtHoraFin.innerText = "";
         return;
       }
 
-      selHoraInicio.innerHTML = '<option value="">Consultando disponibilidad y cupo en muelle...</option>';
+      selHoraInicio.innerHTML = '<option value="">Consultando disponibilidad en muelle...</option>';
 
       let resData = null;
       try {
@@ -897,6 +909,7 @@
       const esSabado = (dt.getDay() === 6);
 
       if (esSabado && String(cfg.Habilitar_Sabados || "").toUpperCase() === "NO") {
+        selHoraInicio.disabled = true;
         selHoraInicio.innerHTML = '<option value="">⚠️ Sábados no habilitados para recepción</option>';
         return;
       }
@@ -905,20 +918,29 @@
       const cajasHoy = resData ? (resData.cajasAgendadasHoy || 0) : 0;
       const cupoRestante = Math.max(0, limiteDiario - cajasHoy);
 
-      bannerCupo.innerText = `📊 Cupo del día: ${cajasHoy} / ${limiteDiario} cajas recibidas (${cupoRestante} disponibles)`;
-      bannerCupo.style.display = "block";
-
+      // Bloqueo y Alerta en Contenedor si se llena el día
       if (cajasHoy >= limiteDiario) {
-        selHoraInicio.innerHTML = `<option value="">⚠️ Cupo diario completado (${limiteDiario} cajas alcanzadas). Seleccione otra fecha.</option>`;
+        selHoraInicio.disabled = true;
+        selHoraInicio.innerHTML = '<option value="">Horario no disponible (Cupo completado)</option>';
+        bannerCupo.innerHTML = `⚠️ <strong>Cupo diario completado:</strong> Se han alcanzado las ${limiteDiario} cajas máximas para esta fecha. Por favor seleccione otra fecha de entrega.`;
+        bannerCupo.style.display = "block";
         txtHoraFin.innerText = "";
         return;
       }
 
+      // Bloqueo y Alerta en Contenedor si la carga supera el cupo restante
       if (totalCajas > cupoRestante) {
-        selHoraInicio.innerHTML = `<option value="">⚠️ Su carga (${totalCajas} cajas) supera el cupo restante (${cupoRestante} cajas). Seleccione otra fecha.</option>`;
+        selHoraInicio.disabled = true;
+        selHoraInicio.innerHTML = '<option value="">Horario no disponible (Cupo superado)</option>';
+        bannerCupo.innerHTML = `⚠️ Su carga (${totalCajas} cajas) supera el cupo disponible (${cupoRestante} cajas) para esta fecha. Por favor seleccione otra fecha de entrega.`;
+        bannerCupo.style.display = "block";
         txtHoraFin.innerText = "";
         return;
       }
+
+      // Si sí cabe dentro del cupo, el contenedor permanece completamente oculto
+      bannerCupo.style.display = "none";
+      selHoraInicio.disabled = false;
 
       const horaAperturaStr = esSabado ? cfg.Hora_Inicio_Sab : cfg.Hora_Inicio_LV;
       const horaCierreStr = esSabado ? cfg.Hora_Fin_Sab : cfg.Hora_Fin_LV;
@@ -926,7 +948,6 @@
       const minApertura = parseHoraAMinutos(horaAperturaStr) || (esSabado ? (7 * 60) : (6 * 60));
       const minCierre = parseHoraAMinutos(horaCierreStr) || (esSabado ? (12 * 60) : (14 * 60));
 
-      // Detección de almuerzo: si las celdas están vacías, hayAlmuerzo = false (Jornada Continua)
       const minIniAlmuerzo = (!esSabado && cfg.Inicio_Almuerzo) ? parseHoraAMinutos(cfg.Inicio_Almuerzo) : null;
       const minFinAlmuerzo = (!esSabado && cfg.Fin_Almuerzo) ? parseHoraAMinutos(cfg.Fin_Almuerzo) : null;
       const hayAlmuerzo = (minIniAlmuerzo !== null && minFinAlmuerzo !== null && minFinAlmuerzo > minIniAlmuerzo);
@@ -961,6 +982,7 @@
       }
 
       if (slotsValidos === 0) {
+        selHoraInicio.disabled = true;
         selHoraInicio.innerHTML = `<option value="">⚠️ Sin franjas continuas de ${duracionMin}m para esta fecha</option>`;
       }
     }
@@ -1048,7 +1070,7 @@
         return;
       }
 
-      if (!selHoraInicio.value) {
+      if (selHoraInicio.disabled || !selHoraInicio.value) {
         mostrarAlerta("Por favor seleccione un horario válido disponible.");
         return;
       }
