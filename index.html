@@ -177,6 +177,11 @@
       background: #ffffff;
     }
 
+    /* Forzar mayúsculas en campos de texto */
+    input[type="text"] {
+      text-transform: uppercase;
+    }
+
     input[type=number]::-webkit-inner-spin-button, 
     input[type=number]::-webkit-outer-spin-button { 
       -webkit-appearance: none; 
@@ -491,7 +496,7 @@
     <!-- Encabezado con Logo Blindado de Agralba -->
     <div class="header-card">
       <div class="logo-wrapper">
-        <img id="imgLogoAgralba" src="./images.png?v=8" alt="Agralba" class="brand-logo" onerror="activarFallbackLogo()">
+        <img id="imgLogoAgralba" src="./images.png?v=9" alt="Agralba" class="brand-logo" onerror="activarFallbackLogo()">
         <svg id="svgLogoAgralba" class="svg-logo-fallback" viewBox="0 0 240 60" xmlns="http://www.w3.org/2000/svg">
           <g fill="#006837">
             <text x="5" y="46" font-family="'Montserrat', sans-serif" font-weight="900" font-size="44" letter-spacing="-1.5">agralba</text>
@@ -571,7 +576,7 @@
           </div>
         </div>
 
-        <!-- Sección 3: Datos de Entrega y Transporte (Placa, Chofer y Tel opcionales) -->
+        <!-- Sección 3: Datos de Entrega y Transporte (Texto Forzado en MAYÚSCULAS) -->
         <div class="section-title">
           🚚 3. Información del Transporte y Proveedor
         </div>
@@ -579,27 +584,27 @@
         <div class="form-grid">
           <div class="form-group">
             <label for="transportadora">Transportadora o Aliado <span class="req">*</span></label>
-            <input type="text" id="transportadora" placeholder="Ej. TCC, Coordinadora, Solistica..." required>
+            <input type="text" id="transportadora" placeholder="EJ. TCC, COORDINADORA, SOLISTICA..." required>
           </div>
 
           <div class="form-group">
             <label for="proveedor">Proveedor que envía <span class="req">*</span></label>
-            <input type="text" id="proveedor" placeholder="Ej. Syngenta, Bayer, Virbac..." required>
+            <input type="text" id="proveedor" placeholder="EJ. SYNGENTA, BAYER, VIRBAC..." required>
           </div>
 
           <div class="form-group full-width">
             <label for="numFacturas">Números de Facturas / Remisiones <span class="req">*</span></label>
-            <input type="text" id="numFacturas" placeholder="Ej. FE-8452, FE-8453, REM-102" required>
+            <input type="text" id="numFacturas" placeholder="EJ. FE-8452, FE-8453, REM-102" required>
           </div>
 
           <div class="form-group">
             <label for="placa">Placa del Vehículo <span class="opt">(Opcional)</span></label>
-            <input type="text" id="placa" placeholder="Ej. SZM-789" maxlength="7" style="text-transform: uppercase;">
+            <input type="text" id="placa" placeholder="EJ. SZM-789" maxlength="7">
           </div>
 
           <div class="form-group">
             <label for="conductor">Nombre Conductor <span class="opt">(Opcional)</span></label>
-            <input type="text" id="conductor" placeholder="Nombre completo">
+            <input type="text" id="conductor" placeholder="NOMBRE COMPLETO">
           </div>
 
           <div class="form-group full-width">
@@ -666,7 +671,7 @@
 
       <div class="form-group" style="text-align: left; margin-bottom: 12px;">
         <label for="txtCitaRetraso">Código de Cita (Ej. AGR-ITA-20261113-001)</label>
-        <input type="text" id="txtCitaRetraso" placeholder="AGR-ITA-..." style="text-transform: uppercase;">
+        <input type="text" id="txtCitaRetraso" placeholder="AGR-ITA-...">
       </div>
 
       <div class="form-group" style="text-align: left; margin-bottom: 18px;">
@@ -715,6 +720,16 @@
     const btnEnviar = document.getElementById("btnEnviar");
     const spinner = document.getElementById("loadingSpinner");
     const bannerCupo = document.getElementById("bannerCupo");
+
+    // Conversión automática a MAYÚSCULAS en todos los campos de texto
+    document.querySelectorAll('input[type="text"]').forEach(input => {
+      input.addEventListener('input', function() {
+        const start = this.selectionStart;
+        const end = this.selectionEnd;
+        this.value = this.value.toUpperCase();
+        this.setSelectionRange(start, end);
+      });
+    });
 
     function mostrarAlerta(mensaje) {
       const toast = document.getElementById("toastAlerta");
@@ -861,14 +876,14 @@
       }
 
       const cfg = (resData && resData.config) ? resData.config : {
-        Hora_Inicio_LV: "7:00",
+        Hora_Inicio_LV: "6:00",
         Hora_Fin_LV: "14:00",
-        Inicio_Almuerzo: "12:00",
-        Fin_Almuerzo: "13:00",
+        Inicio_Almuerzo: "",
+        Fin_Almuerzo: "",
         Habilitar_Sabados: "SI",
         Hora_Inicio_Sab: "7:00",
         Hora_Fin_Sab: "12:00",
-        Limite_Cajas_LV: 700,
+        Limite_Cajas_LV: 1000,
         Limite_Cajas_Sab: 300,
         Cajas_Por_Minuto: 6,
         Tiempo_Minimo_Cita_Min: 30,
@@ -886,7 +901,7 @@
         return;
       }
 
-      const limiteDiario = esSabado ? (parseInt(cfg.Limite_Cajas_Sab, 10) || 300) : (parseInt(cfg.Limite_Cajas_LV, 10) || 700);
+      const limiteDiario = esSabado ? (parseInt(cfg.Limite_Cajas_Sab, 10) || 300) : (parseInt(cfg.Limite_Cajas_LV, 10) || 1000);
       const cajasHoy = resData ? (resData.cajasAgendadasHoy || 0) : 0;
       const cupoRestante = Math.max(0, limiteDiario - cajasHoy);
 
@@ -908,10 +923,13 @@
       const horaAperturaStr = esSabado ? cfg.Hora_Inicio_Sab : cfg.Hora_Inicio_LV;
       const horaCierreStr = esSabado ? cfg.Hora_Fin_Sab : cfg.Hora_Fin_LV;
 
-      const minApertura = parseHoraAMinutos(horaAperturaStr) || (7 * 60);
+      const minApertura = parseHoraAMinutos(horaAperturaStr) || (esSabado ? (7 * 60) : (6 * 60));
       const minCierre = parseHoraAMinutos(horaCierreStr) || (esSabado ? (12 * 60) : (14 * 60));
-      const minIniAlmuerzo = esSabado ? 9999 : (parseHoraAMinutos(cfg.Inicio_Almuerzo) || (12 * 60));
-      const minFinAlmuerzo = esSabado ? 9999 : (parseHoraAMinutos(cfg.Fin_Almuerzo) || (13 * 60));
+
+      // Detección de almuerzo: si las celdas están vacías, hayAlmuerzo = false (Jornada Continua)
+      const minIniAlmuerzo = (!esSabado && cfg.Inicio_Almuerzo) ? parseHoraAMinutos(cfg.Inicio_Almuerzo) : null;
+      const minFinAlmuerzo = (!esSabado && cfg.Fin_Almuerzo) ? parseHoraAMinutos(cfg.Fin_Almuerzo) : null;
+      const hayAlmuerzo = (minIniAlmuerzo !== null && minFinAlmuerzo !== null && minFinAlmuerzo > minIniAlmuerzo);
 
       const citasOcupadas = (resData && Array.isArray(resData.ocupadas)) ? resData.ocupadas : [];
 
@@ -922,7 +940,7 @@
         const slotFinMin = m + duracionMin;
 
         if (slotFinMin > minCierre) continue;
-        if (!esSabado && Math.max(m, minIniAlmuerzo) < Math.min(slotFinMin, minFinAlmuerzo)) continue;
+        if (hayAlmuerzo && Math.max(m, minIniAlmuerzo) < Math.min(slotFinMin, minFinAlmuerzo)) continue;
 
         const haySolape = citasOcupadas.some(cita => {
           const cIni = parseHoraAMinutos(cita.inicio);
@@ -971,7 +989,7 @@
       if (event) event.preventDefault();
 
       const transpInput = document.getElementById("transportadora");
-      const transp = transpInput.value.trim();
+      const transp = transpInput.value.trim().toUpperCase();
       const seca = parseInt(inpCajasSeca.value || 0, 10);
       const frio = parseInt(inpCavasFrio.value || 0, 10);
       const totalCajas = seca + frio;
@@ -1018,7 +1036,7 @@
       window.open(urlFinal, "_blank");
     }
 
-    // Envío del Formulario
+    // Envío del Formulario (Todos los textos en MAYÚSCULAS)
     formCita.addEventListener("submit", async (e) => {
       e.preventDefault();
 
@@ -1036,11 +1054,11 @@
       }
 
       const payload = {
-        transportadora: document.getElementById("transportadora").value.trim(),
-        proveedor: document.getElementById("proveedor").value.trim(),
-        numFacturas: document.getElementById("numFacturas").value.trim(),
+        transportadora: document.getElementById("transportadora").value.trim().toUpperCase(),
+        proveedor: document.getElementById("proveedor").value.trim().toUpperCase(),
+        numFacturas: document.getElementById("numFacturas").value.trim().toUpperCase(),
         placa: document.getElementById("placa").value.trim().toUpperCase(),
-        conductor: document.getElementById("conductor").value.trim(),
+        conductor: document.getElementById("conductor").value.trim().toUpperCase(),
         telefono: document.getElementById("telefono").value.trim(),
         cajasSeca: seca,
         cavasFrio: frio,
